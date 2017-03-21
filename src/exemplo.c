@@ -23,14 +23,14 @@ void imprime_casa(int x, int y) {
 int posicao_igual(POSICAO p,int x, int y){
 	return p.x == x && p.y == y;
 }
-int tem_inimigo(ESTADO e, int x, int y){             
+int tem_inimigo(ESTADO e, int x, int y){
 	int i;
 	for(i=0;i< e.num_inimigos; i++)
 		if (posicao_igual(e.inimigo[i],x,y))
 			return 1;
 	return 0;
 }
-int tem_obstaculo(ESTADO e, int x, int y){             
+int tem_obstaculo(ESTADO e, int x, int y){
 	int i;
 	for(i=0;i< e.num_obstaculos; i++)
 		if (posicao_igual(e.obstaculo[i],x,y))
@@ -38,8 +38,7 @@ int tem_obstaculo(ESTADO e, int x, int y){
 	return 0;
 }
 int tem_jogador(ESTADO e, int x, int y){
-	//nao esta bem
-	
+	return posicao_igual(e.jog, x, y);
 }
 
 
@@ -65,7 +64,7 @@ ESTADO inicializar_inimigo(ESTADO e){
 	e.inimigo[(int)e.num_inimigos].y=y;
 	e.num_inimigos ++;
 
-	return e;  
+	return e;
 
 }
 ESTADO inicializar_obstaculos(ESTADO e){
@@ -114,7 +113,7 @@ void imprime_movimento(ESTADO e, int dx, int dy) {
 		return;
 	if(posicao_ocupada(e, x, y))
 		return;
-	
+
 	novo.jog.x = x;
 	novo.jog.y = y;
 	sprintf(link, "http://localhost/cgi-bin/exemplo?%s", estado2str(novo));
