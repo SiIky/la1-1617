@@ -15,14 +15,14 @@ char *estado2str (estado_p e)
 	return buffer;
 }
 
-estado_s str2estado (char *argumentos)
+estado_s str2estado (char * args)
 {
 	estado_s e;
 	char * p = (char *) &e;
 
-	for (size_t i = 0; i < sizeof(estado_s); i++, argumentos += 2) {
+	for (size_t i = 0; i < sizeof(estado_s); i++, args += 2) {
 		unsigned int d;
-		sscanf(argumentos, "%2x", &d);
+		sscanf(args, "%2x", &d);
 		p[i] = (char) d;
 	}
 
@@ -41,7 +41,10 @@ void init_entidade (estado_p e, posicao_p p, unsigned char * num)
 
 	p->x = x;
 	p->y = y;
-	(*num)++;
+
+	// para funcionar pro jogador tb
+	if (num != NULL)
+		(*num)++;
 }
 
 void init_inimigos (estado_p e)
@@ -54,4 +57,27 @@ void init_obstaculos (estado_p e)
 {
 	for (size_t i = 0; i < MAX_OBSTACULOS; i++)
 		init_entidade(e, (e->obstaculo + i), &(e->num_obstaculos));
+}
+
+void init_jogador (estado_p e)
+{
+	init_entidade(e, &(e->jog), NULL);
+}
+
+estado_s init_estado (void)
+{
+	estado_s ret;
+
+	init_obstaculos(&ret);
+	init_inimigos(&ret);
+	init_jogador(&ret);
+
+	return ret;
+}
+
+estado_s ler_estado (char * args)
+{
+	return (args == NULL) ?
+		init_estado() :
+		str2estado(args);
 }

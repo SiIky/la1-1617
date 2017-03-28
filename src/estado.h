@@ -15,7 +15,8 @@ typedef struct {
 	posicao_s obstaculo[MAX_OBSTACULOS];
 } estado_s, *estado_p;
 
-char *estado2str (estado_p e);
-estado_s str2estado (char *argumentos);
+char * estado2str (estado_p e);
+estado_s str2estado (char * args);
+estado_s ler_estado (char * args);
 
 #endif /* _ESTADO_H */
