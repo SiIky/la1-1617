@@ -1,48 +1,16 @@
-/**
-@file estado.h
-Definição do estado e das funções que convertem estados em strings e vice-versa
-*/
+#ifndef _ESTADO_H
+#define _ESTADO_H
 
-/** \brief O nº máximo de inimigos */
-#define MAX_INIMIGOS		100
+#define MAX_BUFFER	10240
 
-/** \brief O nº máximo de obstáculos */
-#define MAX_OBSTACULOS		100
+typdef struct {
+	posicao_s jog;
+	unsigned char num_inimigos;
+	unsigned char num_obstaculos;
+	posicao_s inimigo[MAX_INIMIGOS]
+	posicao_s obstaculo[MAX_OBSTACULOS]
+} estado_s, *estado_p;
 
-/**
-\brief Estrutura que armazena uma posição
-*/
-typedef struct posicao {
-	char x;
-	char y;
-} POSICAO;
-
-/**
-\brief Estrutura que armazena o estado do jogo
-*/
-typedef struct estado {
-	/** A posição do jogador */
-	POSICAO jog;
-	/** O nº de inimigos */
-	char num_inimigos;
-	/** O nº de obstáculos */
-	char num_obstaculos;
-	/** Array com a posição dos inimigos */
-	POSICAO inimigo[MAX_INIMIGOS];
-	/** Array com a posição dos obstáculos */
-	POSICAO obstaculo[MAX_OBSTACULOS];
-} ESTADO;
-
-/**
-\brief Função que converte um estado numa string
-@param e O estado
-@returns A string correspondente ao estado e
-*/
-char *estado2str(ESTADO e);
-
-/**
-\brief Função que converte uma string num estado 
-@param argumentos Uma string contendo os argumentos passados à CGI
-@returns O estado correspondente à string dos argumentos
-*/
-ESTADO str2estado(char *argumentos);
+char *estado2str (estado_p e);
+estado_s str2estado (char *argumentos);
+#endif /* _ESTADO_H */
