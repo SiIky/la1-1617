@@ -2,15 +2,20 @@
 #define _ESTADO_H
 
 #define MAX_BUFFER	10240
+#define MAX_INIMIGOS	100
+#define MAX_OBSTACULOS	100
 
-typdef struct {
+#include "posicao.h"
+
+typedef struct {
 	posicao_s jog;
 	unsigned char num_inimigos;
 	unsigned char num_obstaculos;
-	posicao_s inimigo[MAX_INIMIGOS]
-	posicao_s obstaculo[MAX_OBSTACULOS]
+	posicao_s inimigo[MAX_INIMIGOS];
+	posicao_s obstaculo[MAX_OBSTACULOS];
 } estado_s, *estado_p;
 
 char *estado2str (estado_p e);
 estado_s str2estado (char *argumentos);
+
 #endif /* _ESTADO_H */

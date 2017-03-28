@@ -1,9 +1,10 @@
 #include "jogo.h"
+#include "bool.h"
 
-int tem_merdas (posicao_p *p, int num, int x, int y)
+bool tem_merdas (posicao_p p, size_t num, abcissa x, ordenada y)
 {
-	for (int i = 0; i < num; i++)
-		if (posicao_igual(p, x, y))
+	for (size_t i = 0; i < num; i++)
+		if (posicao_igual(p[i], x, y))
 			return 1;
 	return 0;
 }

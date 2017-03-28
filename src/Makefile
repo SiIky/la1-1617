@@ -1,12 +1,21 @@
-CFLAGS= -Wall -g
-FICHEIROS=cgi.h estado.c estado.h exemplo.c Makefile
+EXEC=rogue
+CFLAGS=-Wall -Wextra -O3 -pedantic -g
+FICHEIROS=bool.h estado.c estado.h html.c html.h inimigos.c jogo.c jogo.h main.c Makefile posicao.c posicao.h
 
-install: exemplo
+all: object
+	cc $(CFLAGS) *.o -o $(EXEC)
+
+object: $(FICHEIROS)
+	cc $(CFLAGS) -c estado.c
+	cc $(CFLAGS) -c html.c
+	cc $(CFLAGS) -c inimigos.c
+	cc $(CFLAGS) -c jogo.c
+	cc $(CFLAGS) -c main.c
+	cc $(CFLAGS) -c posicao.c
+
+install: all
 	sudo cp exemplo /usr/lib/cgi-bin
 	touch install
-
-exemplo: exemplo.o estado.o
-	cc -o exemplo exemplo.o estado.o
 
 exemplo.zip: $(FICHEIROS)
 	zip -9 exemplo.zip $(FICHEIROS)
@@ -16,7 +25,4 @@ doc:
 	doxygen
 
 clean:
-	rm -rf *.o exemplo Doxyfile latex html install
-
-estado.o: estado.c estado.h
-exemplo.o: exemplo.c cgi.h estado.h
+	rm -rf *.o exemplo Doxyfile latex html install $(EXEC)
