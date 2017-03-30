@@ -1,11 +1,12 @@
 #ifndef _ESTADO_H
 #define _ESTADO_H
 
-#define MAX_BUFFER	10240
-#define MAX_INIMIGOS	100
-#define MAX_OBSTACULOS	100
-
 #include "posicao.h"
+
+#define TAM	10
+#define MAX_BUFFER	10240
+#define MAX_INIMIGOS	((TAM * TAM) >> 2)
+#define MAX_OBSTACULOS	((TAM * TAM) >> 2)
 
 typedef struct {
 	posicao_s jog;

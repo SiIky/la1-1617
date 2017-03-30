@@ -1,6 +1,6 @@
 EXEC=rogue
-CFLAGS=-Wall -Wextra -O3 -pedantic -g
-FICHEIROS=bool.h estado.c estado.h html.c html.h inimigos.c jogo.c jogo.h main.c Makefile posicao.c posicao.h
+CFLAGS=-Wall -Wextra -Werror -O3 -pedantic -g
+FICHEIROS=bool.h estado.c estado.h html.c html.h jogo.h main.c Makefile posicao.c posicao.h
 
 all: object
 	cc $(CFLAGS) *.o -o $(EXEC)
@@ -8,13 +8,11 @@ all: object
 object: $(FICHEIROS)
 	cc $(CFLAGS) -c estado.c
 	cc $(CFLAGS) -c html.c
-	cc $(CFLAGS) -c inimigos.c
-	cc $(CFLAGS) -c jogo.c
 	cc $(CFLAGS) -c main.c
 	cc $(CFLAGS) -c posicao.c
 
 install: all
-	sudo cp exemplo /usr/lib/cgi-bin
+	sudo cp $(EXEC) /usr/lib/cgi-bin
 	touch install
 
 exemplo.zip: $(FICHEIROS)
