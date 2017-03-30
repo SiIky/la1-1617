@@ -1,10 +1,14 @@
-#include "jogo.h"
 #include "bool.h"
+#include "estado.h"
+#include "posicao.h"
 
-bool tem_merdas (posicao_p p, size_t num, abcissa x, ordenada y)
+#include "jogo.h"
+
+bool posicao_ocupada (estado_p e, abcissa x, ordenada y)
 {
-	for (size_t i = 0; i < num; i++)
-		if (posicao_igual(p[i], x, y))
-			return 1;
-	return 0;
+	return (e == NULL) ?
+		false :
+		tem_merdas(e->inimigo, e->num_inimigos, x, y)
+		|| tem_merdas(e->obstaculo, e->num_obstaculos, x, y)
+		|| posicao_igual(e->jog, x, y);
 }
