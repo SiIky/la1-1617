@@ -18,7 +18,7 @@
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
 #define FECHA_SVG	(puts("\n</SVG>\n"))
 
-#define QUADRADO(L, C, E, COR)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu FILL=\"%s\"/>\n",\
+#define RECT(L, C, E, COR)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu FILL=\"%s\"/>\n",\
 			((L) * (E)),\
 			((C) * (E)),\
 			(E),\
@@ -32,6 +32,13 @@
 			(E),\
 			(E),\
 			(I)\
+			))
+
+#define RECT_TRANSPARENTE(L, C, E)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu STYLE=\"fill-opacity:0\"/>\n",\
+			((L) * (E)),\
+			((C) * (E)),\
+			(E),\
+			(E)\
 			))
 
 void imprime_casa (size_t l, size_t c);

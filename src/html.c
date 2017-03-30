@@ -3,21 +3,59 @@
 
 #include "html.h"
 
+void imprime_entidades (posicao_p p, size_t max, char * img)
+{
+	if (p == NULL)
+		return;
+	for (size_t i = 0; i < max; i++) {
+		IMAGE(p->x, p->y, ESCALA, img);
+	}
+}
+
+void imprime_inimigos (estado_p e)
+{
+	if (e == NULL)
+		return;
+	imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
+}
+
+
+void imprime_jogada (estado_p e, size_t x, size_t y)
+{
+	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
+			return;
+	RECT_TRANSPARENTE(y, x, ESCALA);
+}
+
+void imprime_jogadas (estado_p e)
+{
+	if (e == NULL)
+		return;
+	imprime_entidades(&(e->jog), 1, IMG_JOGADOR);
+
+	size_t jx = e->jog.x;
+	size_t jy = e->jog.y;
+
+	size_t mx = e->jog.x + 1;
+	size_t my = e->jog.y + 1;
+
+	for (size_t x = jx - 1; x < mx; x++)
+		for (size_t y = jy - 1; y < my; y++)
+			imprime_jogada(e, x, y);
+}
+
 void imprime_obstaculos (estado_p e)
 {
 	if (e == NULL)
 		return;
-	for (size_t o = 0; o < e->num_obstaculos; o++) {
-		posicao_p p = e->obstaculo + o;
-		IMAGE(p->x, p->y, ESCALA, IMG_OBSTACULO);
-	}
+	imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
 void imprime_casa (size_t l, size_t c)
 {
 	char * cores[] = { COR_PAR, COR_IMPAR };
 	char * cor = cores[(l + c) % 2];
-	QUADRADO(l, c, ESCALA, cor);
+	RECT(l, c, ESCALA, cor);
 }
 
 void imprime_tabuleiro (void)
@@ -36,4 +74,9 @@ void imprime_jogo (estado_p e)
 
 	imprime_tabuleiro();
 	imprime_obstaculos(e);
+	imprime_inimigos(e);
+	imprime_jogadas(e);
+
+	//printf("<A XLINK:HREF=http://localhost/cgi-bin/rogue?%s>", str); {
+	//} printf("</A>");
 }

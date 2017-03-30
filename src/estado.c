@@ -32,7 +32,7 @@ estado_s str2estado (char * args)
 	return e;
 }
 
-void init_entidade (estado_p e, posicao_p p, unsigned char * num)
+void init_entidade (estado_p e, posicao_p p)
 {
 	if (e == NULL || p == NULL)
 		return;
@@ -46,32 +46,32 @@ void init_entidade (estado_p e, posicao_p p, unsigned char * num)
 
 	p->x = x;
 	p->y = y;
+}
 
-	// para funcionar pro jogador tb
-	if (num != NULL)
-		(*num)++;
+void init_entidades (estado_p e, posicao_p p, unsigned char * num, size_t max)
+{
+	if (e == NULL || p == NULL || num == NULL)
+		return;
+	for (*num = 0; *num < max; (*num)++)
+		init_entidade(e, p + (*num));
 }
 
 void init_inimigos (estado_p e)
 {
-	if (e == NULL)
-		return;
-	for (size_t i = 0; i < MAX_INIMIGOS; i++)
-		init_entidade(e, (e->inimigo + i), &(e->num_inimigos));
+	if (e != NULL)
+		init_entidades(e, e->inimigo, &(e->num_inimigos), MAX_INIMIGOS);
 }
 
 void init_obstaculos (estado_p e)
 {
-	if (e == NULL)
-		return;
-	for (size_t i = 0; i < MAX_OBSTACULOS; i++)
-		init_entidade(e, (e->obstaculo + i), &(e->num_obstaculos));
+	if (e != NULL)
+		init_entidades(e, e->obstaculo, &(e->num_obstaculos), MAX_OBSTACULOS);
 }
 
 void init_jogador (estado_p e)
 {
 	if (e != NULL)
-		init_entidade(e, &(e->jog), NULL);
+		init_entidade(e, &(e->jog));
 }
 
 estado_s init_estado (void)
