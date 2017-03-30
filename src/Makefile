@@ -1,6 +1,6 @@
 EXEC=rogue
-CFLAGS=-Wall -Wextra -Werror -O3 -pedantic -g
-FICHEIROS=bool.h estado.c estado.h html.c html.h jogo.h main.c Makefile posicao.c posicao.h
+CFLAGS=-Wall -Wextra -Werror -O3 -pedantic -g -Iinclude/
+FICHEIROS=estado.c html.c main.c Makefile posicao.c include/bool.h include/estado.h include/html.h include/jogo.h include/posicao.h
 
 all: object
 	cc $(CFLAGS) *.o -o $(EXEC)
