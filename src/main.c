@@ -14,7 +14,7 @@ int main (void)
 	CONTENT_TYPE;
 
 	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
-		//imprime_jogo(&e);
+		imprime_jogo(&e);
 	} FECHA_SVG;
 
 	return 0;
