@@ -14,6 +14,8 @@
 
 #include <stdio.h>
 
+#define COMMENT(S)	(printf("\n<!-- %s -->\n", (S)))
+#define COMMENT_ENTIDADE(I, X, Y)	(printf("\n<!-- i = %lu\tx = %u\ty = %u -->\n", (I), (X), (Y)))
 #define CONTENT_TYPE	(puts("Content-Type: text/html\n\n"))
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
 #define FECHA_SVG	(puts("\n</SVG>\n"))

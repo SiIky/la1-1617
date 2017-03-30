@@ -31,7 +31,7 @@ void imprime_jogadas (estado_p e)
 {
 	if (e == NULL)
 		return;
-	imprime_entidades(&(e->jog), 1, IMG_JOGADOR);
+	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
 	size_t jx = e->jog.x;
 	size_t jy = e->jog.y;
