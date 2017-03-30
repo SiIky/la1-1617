@@ -3,6 +3,16 @@
 
 #include "html.h"
 
+void imprime_obstaculos (estado_p e)
+{
+	if (e == NULL)
+		return;
+	for (size_t o = 0; o < e->num_obstaculos; o++) {
+		posicao_p p = e->obstaculo + o;
+		IMAGE(p->x, p->y, ESCALA, IMG_OBSTACULO);
+	}
+}
+
 void imprime_casa (size_t l, size_t c)
 {
 	char * cores[] = { COR_PAR, COR_IMPAR };
@@ -24,7 +34,6 @@ void imprime_jogo (estado_p e)
 	if (e == NULL || (str = estado2str(e)) == NULL)
 		return;
 
-	printf("<A XLINK:HREF=http://localhost/cgi-bin/rogue?%s>", str); {
 	imprime_tabuleiro();
-	} printf("</A>");
+	imprime_obstaculos(e);
 }
