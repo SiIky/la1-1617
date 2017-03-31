@@ -8,6 +8,7 @@ void imprime_entidades (posicao_p p, size_t max, char * img)
 	if (p == NULL)
 		return;
 	for (size_t i = 0; i < max; i++) {
+		COMMENT_ENTIDADE(i, p->x, p->y);
 		IMAGE(p->x, p->y, ESCALA, img);
 	}
 }
@@ -72,9 +73,16 @@ void imprime_jogo (estado_p e)
 	if (e == NULL || (str = estado2str(e)) == NULL)
 		return;
 
+	COMMENT("imprimir tabuleiro");
 	imprime_tabuleiro();
+
+	COMMENT("imprimir obstaculos");
 	imprime_obstaculos(e);
+
+	COMMENT("imprimir inimigos");
 	imprime_inimigos(e);
+
+	COMMENT("imprimir jogadas");
 	imprime_jogadas(e);
 
 	//printf("<A XLINK:HREF=http://localhost/cgi-bin/rogue?%s>", str); {
