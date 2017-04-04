@@ -46,7 +46,6 @@ posicao_s nova_posicao_unica (const estado_p e)
 	do {
 		x = random() % TAM;
 		y = random() % TAM;
-		printf("<!-- x=%u\ty=%u -->\n", x, y);
 	} while (posicao_ocupada(e, x, y));
 
 	return posicao_new(x, y);
@@ -80,13 +79,11 @@ estado_s init_estado (void)
 {
 	estado_s ret;
 
-	COMMENT("init obstaculos");
+	ret.porta = nova_posicao_unica(&ret);
+
 	ret = init_obstaculos(ret);
-	COMMENT("init inimigos");
 	ret = init_inimigos(ret);
-	COMMENT("init jogador");
 	ret = init_jogador(ret);
-	ret.porta = posicao_new(0,0);
 
 	return ret;
 }

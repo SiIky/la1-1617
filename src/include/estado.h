@@ -28,5 +28,6 @@ estado_s init_obstaculos (estado_s e);
 estado_s init_jogador (estado_s e);
 estado_s init_estado (void);
 estado_s move_jogador (estado_s e, posicao_s p);
+bool fim_de_ronda (const estado_p e);
 
 #endif /* _ESTADO_H */
