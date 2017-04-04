@@ -64,9 +64,11 @@ void imprime_casa (size_t l, size_t c)
 
 void imprime_tabuleiro (void)
 {
-	for (size_t l = 0; l < TAM; l++)
+	for (size_t l = 0; l < TAM; l++) {
 		for (size_t c = 0; c < TAM; c++)
 			imprime_casa(l, c);
+		putchar('\n');
+	}
 }
 
 void imprime_porta (const estado_p e)
