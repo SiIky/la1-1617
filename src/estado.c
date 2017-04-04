@@ -33,6 +33,11 @@ estado_s str2estado (char * args)
 	return e;
 }
 
+bool fim_de_ronda (const estado_p e)
+{
+	return e != NULL && e->num_inimigos == 0;
+}
+
 posicao_s nova_posicao_unica (const estado_p e)
 {
 	abcissa x;
@@ -49,15 +54,19 @@ posicao_s nova_posicao_unica (const estado_p e)
 
 estado_s init_inimigos (estado_s e)
 {
-	for (size_t i = 0; i < MAX_INIMIGOS; i++)
+	for (size_t i = 0; i < MAX_INIMIGOS; i++) {
 		e.inimigo[i] = nova_posicao_unica(&e);
+		e.num_inimigos++;
+	}
 	return e;
 }
 
 estado_s init_obstaculos (estado_s e)
 {
-	for (size_t i = 0; i < MAX_OBSTACULOS; i++)
+	for (size_t i = 0; i < MAX_OBSTACULOS; i++) {
 		e.obstaculo[i] = nova_posicao_unica(&e);
+		e.num_obstaculos++;
+	}
 	return e;
 }
 
@@ -77,6 +86,7 @@ estado_s init_estado (void)
 	ret = init_inimigos(ret);
 	COMMENT("init jogador");
 	ret = init_jogador(ret);
+	ret.porta = posicao_new(0,0);
 
 	return ret;
 }

@@ -10,6 +10,7 @@
 
 typedef struct {
 	posicao_s jog;
+	posicao_s porta;
 	unsigned char num_inimigos;
 	unsigned char num_obstaculos;
 	posicao_s inimigo[MAX_INIMIGOS];

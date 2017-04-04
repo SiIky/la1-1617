@@ -9,8 +9,8 @@ void imprime_entidades (const posicao_p p, size_t max, char * img)
 	if (p == NULL)
 		return;
 	for (size_t i = 0; i < max; i++) {
-		COMMENT_ENTIDADE(i, p->x, p->y);
-		IMAGE(p->x, p->y, ESCALA, img);
+		COMMENT_ENTIDADE(i, p[i].x, p[i].y);
+		IMAGE(p[i].x, p[i].y, ESCALA, img);
 	}
 }
 
@@ -26,7 +26,7 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 		return;
 	estado_s ne = *e;
 	ne = move_jogador(ne, posicao_new(x, y));
-	char * query = estado2str(e);
+	char * query = estado2str(&ne);
 	GAME_LINK(query);
 	RECT_TRANSPARENTE(y, x, ESCALA);
 	FECHA_A;
@@ -44,15 +44,15 @@ void imprime_jogadas (const estado_p e)
 	size_t mx = e->jog.x + 1;
 	size_t my = e->jog.y + 1;
 
-	for (size_t x = jx - 1; x < mx; x++)
-		for (size_t y = jy - 1; y < my; y++)
+	for (size_t x = jx - 1; x <= mx; x++)
+		for (size_t y = jy - 1; y <= my; y++)
 			imprime_jogada(e, x, y);
 }
 
 void imprime_obstaculos (const estado_p e)
 {
 	if (e != NULL)
-	imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
+		imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
 void imprime_casa (size_t l, size_t c)
@@ -69,15 +69,26 @@ void imprime_tabuleiro (void)
 			imprime_casa(l, c);
 }
 
+void imprime_porta (const estado_p e)
+{
+	if (e == NULL)
+		return;
+	bool fim = fim_de_ronda(e);
+}
+
 void imprime_jogo (const estado_p e)
 {
-	char * str = NULL;
+	if (e == NULL)
+		return;
+	char * link = estado2str(e);
 
-	if (e == NULL || (str = estado2str(e)) == NULL)
+	if (link == NULL)
 		return;
 
 	COMMENT("imprimir tabuleiro");
 	imprime_tabuleiro();
+
+	imprime_porta();
 
 	COMMENT("imprimir obstaculos");
 	imprime_obstaculos(e);

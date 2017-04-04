@@ -11,6 +11,7 @@
 #define IMG_OBSTACULO	(IMAGE_PATH "lava_pool1.png")
 #define IMG_INIMIGO	(IMAGE_PATH "DwellerN_03.png")
 #define IMG_JOGADOR	(IMAGE_PATH "Driders_04.png")
+#define IMG_PORTA	(IMAGE_PATH "porta.jpg")
 
 #include <stdio.h>
 
@@ -20,7 +21,7 @@
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
 #define FECHA_SVG	(puts("\n</SVG>\n"))
 
-#define GAME_LINK(Q)	(printf("<A HREF=\"http://localhost/cgi-bin/rogue?%s\">\n", (Q)))
+#define GAME_LINK(Q)	(printf("<A XLINK:HREF=\"http://localhost/cgi-bin/rogue?%s\">\n", (Q)))
 #define FECHA_A		(puts("</A>\n"))
 
 #define RECT(L, C, E, COR)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu FILL=\"%s\"/>\n",\
