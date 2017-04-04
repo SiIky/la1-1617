@@ -6,7 +6,7 @@
 #include "jogo.h"
 #include "html.h"
 
-char * estado2str (estado_p e)
+char * estado2str (const estado_p e)
 {
 	if (e == NULL)
 		return NULL;
@@ -33,10 +33,8 @@ estado_s str2estado (char * args)
 	return e;
 }
 
-void init_entidade (estado_p e, posicao_p p)
+posicao_s nova_posicao_unica (const estado_p e)
 {
-	if (e == NULL || p == NULL)
-		return;
 	abcissa x;
 	ordenada y;
 
@@ -46,35 +44,27 @@ void init_entidade (estado_p e, posicao_p p)
 		printf("<!-- x=%u\ty=%u -->\n", x, y);
 	} while (posicao_ocupada(e, x, y));
 
-	*p = posicao_new(x, y);
+	return posicao_new(x, y);
 }
 
-void init_entidades (estado_p e, posicao_p p, unsigned char * num, size_t max)
+estado_s init_inimigos (estado_s e)
 {
-	if (e == NULL || p == NULL || num == NULL)
-		return;
-	for (*num = 0; *num < max; (*num)++) {
-		printf("<!-- *num = %u -->\n", *num);
-		init_entidade(e, p + *num);
-	}
+	for (size_t i = 0; i < MAX_INIMIGOS; i++)
+		e.inimigo[i] = nova_posicao_unica(&e);
+	return e;
 }
 
-void init_inimigos (estado_p e)
+estado_s init_obstaculos (estado_s e)
 {
-	if (e != NULL)
-		init_entidades(e, e->inimigo, &e->num_inimigos, MAX_INIMIGOS);
+	for (size_t i = 0; i < MAX_OBSTACULOS; i++)
+		e.obstaculo[i] = nova_posicao_unica(&e);
+	return e;
 }
 
-void init_obstaculos (estado_p e)
+estado_s init_jogador (estado_s e)
 {
-	if (e != NULL)
-		init_entidades(e, e->obstaculo, &e->num_obstaculos, MAX_OBSTACULOS);
-}
-
-void init_jogador (estado_p e)
-{
-	if (e != NULL)
-		init_entidade(e, &e->jog);
+	e.jog = nova_posicao_unica(&e);
+	return e;
 }
 
 estado_s init_estado (void)
@@ -82,11 +72,11 @@ estado_s init_estado (void)
 	estado_s ret;
 
 	COMMENT("init obstaculos");
-	init_obstaculos(&ret);
+	ret = init_obstaculos(ret);
 	COMMENT("init inimigos");
-	init_inimigos(&ret);
+	ret = init_inimigos(ret);
 	COMMENT("init jogador");
-	init_jogador(&ret);
+	ret = init_jogador(ret);
 
 	return ret;
 }
@@ -96,4 +86,10 @@ estado_s ler_estado (char * args)
 	return (args == NULL || strlen(args) == 0) ?
 		init_estado() :
 		str2estado(args);
+}
+
+estado_s move_jogador (estado_s e, posicao_s p)
+{
+	e.jog = p;
+	return e;
 }

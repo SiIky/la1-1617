@@ -20,6 +20,9 @@
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
 #define FECHA_SVG	(puts("\n</SVG>\n"))
 
+#define GAME_LINK(Q)	(printf("<A HREF=\"http://localhost/cgi-bin/rogue?%s\">\n", (Q)))
+#define FECHA_A		(puts("</A>\n"))
+
 #define RECT(L, C, E, COR)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu FILL=\"%s\"/>\n",\
 			((L) * (E)),\
 			((C) * (E)),\
@@ -43,9 +46,13 @@
 			(E)\
 			))
 
+void imprime_entidades (const posicao_p p, size_t max, char * img);
+void imprime_inimigos (const estado_p e);
+void imprime_jogada (const estado_p e, abcissa x, ordenada y);
+void imprime_jogadas (const estado_p e);
+void imprime_obstaculos (const estado_p e);
 void imprime_casa (size_t l, size_t c);
-void imprime_jogo (estado_p e);
-void imprime_obstaculos (estado_p e);
 void imprime_tabuleiro (void);
+void imprime_jogo (const estado_p e);
 
 #endif /* _HTML_H */

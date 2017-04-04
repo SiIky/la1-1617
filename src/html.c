@@ -1,9 +1,10 @@
 #include "estado.h"
 #include "jogo.c"
+#include "posicao.h"
 
 #include "html.h"
 
-void imprime_entidades (posicao_p p, size_t max, char * img)
+void imprime_entidades (const posicao_p p, size_t max, char * img)
 {
 	if (p == NULL)
 		return;
@@ -13,22 +14,25 @@ void imprime_entidades (posicao_p p, size_t max, char * img)
 	}
 }
 
-void imprime_inimigos (estado_p e)
+void imprime_inimigos (const estado_p e)
 {
-	if (e == NULL)
-		return;
-	imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
+	if (e != NULL)
+		imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
 }
 
-
-void imprime_jogada (estado_p e, size_t x, size_t y)
+void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 {
 	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
-			return;
+		return;
+	estado_s ne = *e;
+	ne = move_jogador(ne, posicao_new(x, y));
+	char * query = estado2str(e);
+	GAME_LINK(query);
 	RECT_TRANSPARENTE(y, x, ESCALA);
+	FECHA_A;
 }
 
-void imprime_jogadas (estado_p e)
+void imprime_jogadas (const estado_p e)
 {
 	if (e == NULL)
 		return;
@@ -45,10 +49,9 @@ void imprime_jogadas (estado_p e)
 			imprime_jogada(e, x, y);
 }
 
-void imprime_obstaculos (estado_p e)
+void imprime_obstaculos (const estado_p e)
 {
-	if (e == NULL)
-		return;
+	if (e != NULL)
 	imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
@@ -66,7 +69,7 @@ void imprime_tabuleiro (void)
 			imprime_casa(l, c);
 }
 
-void imprime_jogo (estado_p e)
+void imprime_jogo (const estado_p e)
 {
 	char * str = NULL;
 
