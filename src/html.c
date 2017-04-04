@@ -88,11 +88,9 @@ void imprime_porta (estado_s e)
 
 void imprime_jogo (const estado_p e)
 {
-	if (e == NULL)
-		return;
-	char * link = estado2str(e);
+	char * link = NULL;
 
-	if (link == NULL)
+	if (e == NULL || (link = estado2str(e)) == NULL)
 		return;
 
 	imprime_tabuleiro();
