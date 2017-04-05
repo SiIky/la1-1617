@@ -9,9 +9,9 @@
 
 #define IMAGE_PATH	"http://localhost/images/"
 #define IMG_OBSTACULO	(IMAGE_PATH "lava_pool1.png")
-#define IMG_INIMIGO	(IMAGE_PATH "DwellerN_03.png")
-#define IMG_JOGADOR	(IMAGE_PATH "Driders_04.png")
-#define IMG_PORTA	(IMAGE_PATH "porta.jpg")
+#define IMG_INIMIGO	(IMAGE_PATH "Char_14.png")
+#define IMG_JOGADOR	(IMAGE_PATH "character_21.png")
+#define IMG_PORTA	(IMAGE_PATH "tombstone.png")
 
 #include <stdio.h>
 

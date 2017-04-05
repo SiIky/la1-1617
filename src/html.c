@@ -22,14 +22,16 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 {
 	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
 		return;
-
-	estado_s ne = move_jogador(*e, posicao_new(x, y));
+	estado_s ne = (posicao_igual(e->porta, x, y) && fim_de_ronda(e)) ?
+				init_estado():
+				move_jogador(*e, posicao_new(x, y));
 
 	char * query = estado2str(&ne);
 	if (query != NULL) {
 		GAME_LINK(query);
 		RECT_TRANSPARENTE(y, x, ESCALA);
 		FECHA_A;
+
 	}
 }
 
@@ -75,14 +77,6 @@ void imprime_tabuleiro (void)
 void imprime_porta (estado_s e)
 {
 	IMAGE(e.porta.x, e.porta.y, ESCALA, IMG_PORTA);
-
-	if (fim_de_ronda(&e)) {
-		e = init_estado();
-		char * link = estado2str(&e);
-		GAME_LINK(link);
-		RECT_TRANSPARENTE(e.porta.x, e.porta.y, ESCALA);
-		FECHA_A;
-	}
 }
 
 void imprime_jogo (const estado_p e)
