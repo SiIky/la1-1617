@@ -14,7 +14,7 @@ bool posicao_igual (posicao_s p, abcissa x, ordenada y)
 	return p.x == x && p.y == y;
 }
 
-bool tem_merdas (posicao_p p, size_t num, abcissa x, ordenada y)
+bool pos_elem (posicao_p p, size_t num, abcissa x, ordenada y)
 {
 	bool ret = false;
 	if (p != NULL)
