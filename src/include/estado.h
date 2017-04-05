@@ -3,7 +3,6 @@
 
 #include "posicao.h"
 
-#define TAM		10
 #define MAX_BUFFER	10240
 #define MAX_INIMIGOS	(TAM)
 #define MAX_OBSTACULOS	(TAM)
@@ -21,8 +20,6 @@ char * estado2str (const estado_p e);
 estado_s str2estado (char * args);
 estado_s ler_estado (char * args);
 
-posicao_s nova_posicao_unica (const estado_p e);
-
 estado_s init_inimigos (estado_s e);
 estado_s init_obstaculos (estado_s e);
 estado_s init_jogador (estado_s e);
@@ -30,5 +27,8 @@ estado_s init_estado (void);
 estado_s init_porta (estado_s e);
 estado_s move_jogador (estado_s e, posicao_s p);
 bool fim_de_ronda (const estado_p e);
+
+bool posicao_ocupada (estado_p e, abcissa x, ordenada y);
+posicao_s nova_posicao_unica (const estado_p e);
 
 #endif /* _ESTADO_H */

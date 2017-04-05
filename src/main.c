@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "posicao.h"
 #include "estado.h"
 #include "html.h"
-#include "posicao.h"
 
 int main (void)
 {

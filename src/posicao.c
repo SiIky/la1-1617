@@ -1,5 +1,3 @@
-#include "jogo.h"
-
 #include "posicao.h"
 
 bool posicao_valida (abcissa x, ordenada y)
@@ -18,12 +16,10 @@ bool posicao_igual (posicao_s p, abcissa x, ordenada y)
 
 bool tem_merdas (posicao_p p, size_t num, abcissa x, ordenada y)
 {
+	bool ret = false;
 	if (p != NULL)
-		for (size_t i = 0; i < num; i++)
-			if (posicao_igual(p[i], x, y))
-				return true;
-
-	return false;
+		for (size_t i = 0; i < num && !(ret = posicao_igual(p[i], x, y)); i++);
+	return ret;
 }
 
 posicao_s posicao_new (abcissa x, ordenada y)

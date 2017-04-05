@@ -1,8 +1,7 @@
 #include <stdlib.h>
 
-#include "estado.h"
-#include "jogo.c"
 #include "posicao.h"
+#include "estado.h"
 
 #include "html.h"
 

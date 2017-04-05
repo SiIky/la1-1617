@@ -1,10 +1,29 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "estado.h"
-#include "jogo.h"
-#include "html.h"
+
+bool posicao_ocupada (estado_p e, abcissa x, ordenada y)
+{
+	return (e != NULL)
+		&& (tem_merdas(e->inimigo, e->num_inimigos, x, y)
+		|| tem_merdas(e->obstaculo, e->num_obstaculos, x, y)
+		|| posicao_igual(e->jog, x, y));
+}
+
+posicao_s nova_posicao_unica (const estado_p e)
+{
+	abcissa x;
+	ordenada y;
+
+	do {
+		x = rand() % TAM;
+		y = rand() % TAM;
+	} while (posicao_ocupada(e, x, y));
+
+	return posicao_new(x, y);
+}
 
 char * estado2str (const estado_p e)
 {
@@ -38,19 +57,6 @@ bool fim_de_ronda (const estado_p e)
 	// Temporário, só para a primeira etapa.
 	return true || e != NULL;
 	//return e != NULL && e->num_inimigos == 0;
-}
-
-posicao_s nova_posicao_unica (const estado_p e)
-{
-	abcissa x;
-	ordenada y;
-
-	do {
-		x = rand() % TAM;
-		y = rand() % TAM;
-	} while (posicao_ocupada(e, x, y));
-
-	return posicao_new(x, y);
 }
 
 estado_s init_inimigos (estado_s e)

@@ -1,6 +1,8 @@
 #ifndef _POSICAO_H
 #define _POSICAO_H
 
+#define TAM		10
+
 typedef unsigned char abcissa;
 typedef unsigned char ordenada;
 
