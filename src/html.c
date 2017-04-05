@@ -8,9 +8,8 @@ void imprime_entidades (const posicao_p p, size_t max, char * img)
 {
 	if (p == NULL)
 		return;
-	for (size_t i = 0; i < max; i++) {
+	for (size_t i = 0; i < max; i++)
 		IMAGE(p[i].x, p[i].y, ESCALA, img);
-	}
 }
 
 void imprime_inimigos (const estado_p e)

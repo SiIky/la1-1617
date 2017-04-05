@@ -38,11 +38,3 @@ posicao_s posicao_cpy (posicao_s p)
 {
 	return posicao_new(p.x, p.y);
 }
-
-void posicoes_cpy (posicao_p to, posicao_p from, size_t N)
-{
-	if (to == NULL || from == NULL)
-		return;
-	for (size_t i = 0; i < N; i++)
-		to[i] = posicao_cpy(from[i]);
-}

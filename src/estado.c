@@ -35,7 +35,9 @@ estado_s str2estado (char * args)
 
 bool fim_de_ronda (const estado_p e)
 {
-	return e != NULL && e->num_inimigos == 0;
+	// Temporário, só para a primeira etapa.
+	return true || e != NULL;
+	//return e != NULL && e->num_inimigos == 0;
 }
 
 posicao_s nova_posicao_unica (const estado_p e)
@@ -44,8 +46,8 @@ posicao_s nova_posicao_unica (const estado_p e)
 	ordenada y;
 
 	do {
-		x = random() % TAM;
-		y = random() % TAM;
+		x = rand() % TAM;
+		y = rand() % TAM;
 	} while (posicao_ocupada(e, x, y));
 
 	return posicao_new(x, y);
@@ -75,13 +77,21 @@ estado_s init_jogador (estado_s e)
 	return e;
 }
 
+estado_s init_porta (estado_s e)
+{
+	e.porta = nova_posicao_unica(&e);
+	return e;
+}
+
 estado_s init_estado (void)
 {
 	estado_s ret;
 
-	ret.porta = nova_posicao_unica(&ret);
+	ret.num_inimigos = 0;
+	ret.num_obstaculos = 0;
 
 	ret = init_obstaculos(ret);
+	ret = init_porta(ret);
 	ret = init_inimigos(ret);
 	ret = init_jogador(ret);
 

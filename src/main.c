@@ -10,7 +10,7 @@ int main (void)
 {
 	CONTENT_TYPE;
 
-	srandom(time(NULL));
+	srand(time(NULL));
 
 	estado_s e = ler_estado(getenv("QUERY_STRING"));
 

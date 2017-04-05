@@ -18,6 +18,5 @@ bool posicao_valida (abcissa x, ordenada y);
 bool tem_merdas (posicao_p p, size_t num, abcissa x, ordenada y);
 posicao_s posicao_cpy (posicao_s p);
 posicao_s posicao_new (abcissa x, ordenada y);
-void posicoes_cpy (posicao_p to, posicao_p from, size_t N);
 
 #endif /* _POSICAO_H */
