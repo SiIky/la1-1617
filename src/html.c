@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "estado.h"
 #include "jogo.c"
 #include "posicao.h"
@@ -23,8 +25,8 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
 		return;
 	estado_s ne = (posicao_igual(e->porta, x, y) && fim_de_ronda(e)) ?
-				init_estado():
-				move_jogador(*e, posicao_new(x, y));
+		init_estado():
+		move_jogador(*e, posicao_new(x, y));
 
 	char * query = estado2str(&ne);
 	if (query != NULL) {
@@ -60,8 +62,19 @@ void imprime_obstaculos (const estado_p e)
 
 void imprime_casa (size_t l, size_t c)
 {
-	char * cores[] = { COR_PAR, COR_IMPAR };
-	char * cor = cores[(l + c) % 2];
+	/*
+	 * cada cor tem 3 bytes,
+	 * logo existem 2 ^ (3 * 8)
+	 * cores diferentes
+	 */
+#define NUM_CORES	(1 << (3 * 8))
+	unsigned int rgb = rand() % NUM_CORES;
+#undef NUM_CORES
+
+	/* "#rrggbb0" */
+	char cor[8] = "";
+	sprintf(cor, "#%6x", rgb);
+
 	RECT(l, c, ESCALA, cor);
 }
 
