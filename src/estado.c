@@ -4,7 +4,7 @@
 
 #include "estado.h"
 
-bool posicao_ocupada (estado_p e, abcissa x, ordenada y)
+bool posicao_ocupada (const estado_p e, abcissa x, ordenada y)
 {
 	return (e != NULL)
 		&& (pos_elem(e->inimigo, e->num_inimigos, x, y)
@@ -43,9 +43,9 @@ estado_s str2estado (char * args)
 	estado_s e;
 	char * p = (char *) &e;
 
-	for (size_t i = 0; i < sizeof(estado_s); i++, args += 2) {
+	for (size_t i = 0; i < sizeof(estado_s); i++) {
 		unsigned int d;
-		sscanf(args, "%2x", &d);
+		sscanf(args + (i << 1), "%2x", &d);
 		p[i] = (char) d;
 	}
 
@@ -89,10 +89,11 @@ estado_s init_porta (estado_s e)
 	return e;
 }
 
-estado_s init_estado (void)
+estado_s init_estado (unsigned char nivel)
 {
 	estado_s ret;
 
+	ret.nivel = nivel;
 	ret.num_inimigos = 0;
 	ret.num_obstaculos = 0;
 
@@ -107,7 +108,7 @@ estado_s init_estado (void)
 estado_s ler_estado (char * args)
 {
 	return (args == NULL || strlen(args) == 0) ?
-		init_estado() :
+		init_estado(0) :
 		str2estado(args);
 }
 

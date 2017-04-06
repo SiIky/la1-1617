@@ -8,10 +8,11 @@
 #define MAX_OBSTACULOS	(TAM)
 
 typedef struct {
-	posicao_s jog;
-	posicao_s porta;
+	unsigned char nivel;
 	unsigned char num_inimigos;
 	unsigned char num_obstaculos;
+	posicao_s jog;
+	posicao_s porta;
 	posicao_s inimigo[MAX_INIMIGOS];
 	posicao_s obstaculo[MAX_OBSTACULOS];
 } estado_s, *estado_p;
@@ -23,12 +24,13 @@ estado_s ler_estado (char * args);
 estado_s init_inimigos (estado_s e);
 estado_s init_obstaculos (estado_s e);
 estado_s init_jogador (estado_s e);
-estado_s init_estado (void);
+estado_s init_estado (unsigned char nivel);
+estado_s ler_estado (char * args);
 estado_s init_porta (estado_s e);
 estado_s move_jogador (estado_s e, posicao_s p);
 bool fim_de_ronda (const estado_p e);
 
-bool posicao_ocupada (estado_p e, abcissa x, ordenada y);
+bool posicao_ocupada (const estado_p e, abcissa x, ordenada y);
 posicao_s nova_posicao_unica (const estado_p e);
 
 #endif /* _ESTADO_H */

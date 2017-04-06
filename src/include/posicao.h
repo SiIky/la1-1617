@@ -17,7 +17,7 @@ typedef struct {
 
 bool posicao_igual (posicao_s p, abcissa x, ordenada y);
 bool posicao_valida (abcissa x, ordenada y);
-bool pos_elem (posicao_p p, size_t num, abcissa x, ordenada y);
+bool pos_elem (const posicao_p p, size_t num, abcissa x, ordenada y);
 posicao_s posicao_cpy (posicao_s p);
 posicao_s posicao_new (abcissa x, ordenada y);
 

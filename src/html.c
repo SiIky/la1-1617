@@ -24,7 +24,7 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
 		return;
 	estado_s ne = (posicao_igual(e->porta, x, y) && fim_de_ronda(e)) ?
-		init_estado():
+		init_estado(e->nivel + 1):
 		move_jogador(*e, posicao_new(x, y));
 
 	char * query = estado2str(&ne);
@@ -41,15 +41,28 @@ void imprime_jogadas (const estado_p e)
 		return;
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
-	size_t mx = e->jog.x - 1;
-	size_t my = e->jog.y - 1;
+//	abcissa mx = e->jog.x - 1;
+//	ordenada my = e->jog.y - 1;
+//
+//	abcissa Mx = e->jog.x + 1;
+//	ordenada My = e->jog.y + 1;
+//
+//	for (abcissa x = mx; x <= Mx; x++)
+//		for (ordenada y = my; y <= My; y++)
+//			imprime_jogada(e, x, y);
 
-	size_t Mx = e->jog.x + 1;
-	size_t My = e->jog.y + 1;
+	/* desta forma estupida o bug dos cantos nao acontece */
+	abcissa x = e->jog.x;
+	ordenada y = e->jog.y;
 
-	for (size_t x = mx; x <= Mx; x++)
-		for (size_t y = my; y <= My; y++)
-			imprime_jogada(e, x, y);
+	imprime_jogada(e, x-1, y-1);
+	imprime_jogada(e, x-1, y);
+	imprime_jogada(e, x-1, y+1);
+	imprime_jogada(e, x,   y-1);
+	imprime_jogada(e, x,   y+1);
+	imprime_jogada(e, x+1, y-1);
+	imprime_jogada(e, x+1, y);
+	imprime_jogada(e, x+1, y+1);
 }
 
 void imprime_obstaculos (const estado_p e)
@@ -58,7 +71,7 @@ void imprime_obstaculos (const estado_p e)
 		imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
-void imprime_casa (size_t l, size_t c)
+char * random_color (void)
 {
 	/*
 	 * cada cor tem 3 bytes,
@@ -70,11 +83,16 @@ void imprime_casa (size_t l, size_t c)
 #undef NUM_CORES
 
 	/* "#rrggbb0" */
-	char cor[8] = "";
-	sprintf(cor, "#%06x", rgb);
-	cor[7] = '\0';
+	static char ret[8] = "";
+	sprintf(ret, "#%06x", rgb);
+	ret[7] = '\0';
 
-	RECT(l, c, ESCALA, cor);
+	return ret;
+}
+
+void imprime_casa (size_t l, size_t c)
+{
+	RECT(l, c, ESCALA, random_color());
 }
 
 void imprime_tabuleiro (void)
