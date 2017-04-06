@@ -18,7 +18,7 @@
 #define COMMENT(S)	(puts("\n<!-- " S " -->\n"))
 #define CONTENT_TYPE	(puts("Content-Type: text/html\n\n"))
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
-#define FECHA_SVG	(puts("\n</SVG>\n"))
+#define FECHA_SVG	(puts("</SVG>\n"))
 
 #define GAME_LINK(Q)	(printf("<A XLINK:HREF=\"http://localhost/cgi-bin/rogue?%s\">\n", (Q)))
 #define FECHA_A		(puts("</A>\n"))

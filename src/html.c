@@ -32,7 +32,6 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y)
 		GAME_LINK(query);
 		RECT_TRANSPARENTE(y, x, ESCALA);
 		FECHA_A;
-
 	}
 }
 
@@ -42,14 +41,14 @@ void imprime_jogadas (const estado_p e)
 		return;
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
-	size_t jx = e->jog.x;
-	size_t jy = e->jog.y;
+	size_t mx = e->jog.x - 1;
+	size_t my = e->jog.y - 1;
 
-	size_t mx = e->jog.x + 1;
-	size_t my = e->jog.y + 1;
+	size_t Mx = e->jog.x + 1;
+	size_t My = e->jog.y + 1;
 
-	for (size_t x = jx - 1; x <= mx; x++)
-		for (size_t y = jy - 1; y <= my; y++)
+	for (size_t x = mx; x <= Mx; x++)
+		for (size_t y = my; y <= My; y++)
 			imprime_jogada(e, x, y);
 }
 
@@ -72,7 +71,8 @@ void imprime_casa (size_t l, size_t c)
 
 	/* "#rrggbb0" */
 	char cor[8] = "";
-	sprintf(cor, "#%6x", rgb);
+	sprintf(cor, "#%06x", rgb);
+	cor[7] = '\0';
 
 	RECT(l, c, ESCALA, cor);
 }
@@ -93,14 +93,21 @@ void imprime_porta (estado_s e)
 
 void imprime_jogo (const estado_p e)
 {
-	char * link = NULL;
-
-	if (e == NULL || (link = estado2str(e)) == NULL)
+	if (e == NULL)
 		return;
 
+	COMMENT("tabuleiro");
 	imprime_tabuleiro();
+
+	COMMENT("porta");
 	imprime_porta(*e);
+
+	COMMENT("obstaculos");
 	imprime_obstaculos(e);
+
+	COMMENT("inimigos");
 	imprime_inimigos(e);
+
+	COMMENT("jogadas");
 	imprime_jogadas(e);
 }
