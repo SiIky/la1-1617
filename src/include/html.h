@@ -52,7 +52,7 @@ void imprime_jogada (const estado_p e, abcissa x, ordenada y);
 void imprime_jogadas (const estado_p e);
 void imprime_obstaculos (const estado_p e);
 void imprime_casa (size_t l, size_t c);
-void imprime_tabuleiro (void);
+void imprime_tabuleiro (abcissa L, ordenada C);
 void imprime_jogo (const estado_p e);
 void imprime_porta (estado_s e);
 

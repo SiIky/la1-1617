@@ -95,10 +95,10 @@ void imprime_casa (size_t l, size_t c)
 	RECT(l, c, ESCALA, random_color());
 }
 
-void imprime_tabuleiro (void)
+void imprime_tabuleiro (abcissa L, ordenada C)
 {
-	for (size_t l = 0; l < TAM; l++) {
-		for (size_t c = 0; c < TAM; c++)
+	for (size_t l = 0; l < L; l++) {
+		for (size_t c = 0; c < C; c++)
 			imprime_casa(l, c);
 		putchar('\n');
 	}
@@ -115,7 +115,7 @@ void imprime_jogo (const estado_p e)
 		return;
 
 	COMMENT("tabuleiro");
-	imprime_tabuleiro();
+	imprime_tabuleiro(TAM, TAM);
 
 	COMMENT("porta");
 	imprime_porta(*e);

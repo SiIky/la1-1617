@@ -59,23 +59,28 @@ bool fim_de_ronda (const estado_p e)
 	//return e != NULL && e->num_inimigos == 0;
 }
 
+void init_entidades (estado_p e, posicao_p p, uchar N, uchar * num)
+{
+	if (e != NULL && p != NULL && num != NULL)
+		for ((*num) = 0; (*num) < N; (*num)++)
+			p[(*num)] = nova_posicao_unica(e);
+}
+
+#define min(A, B)	((A) < (B)) ? (A) : (B)
 estado_s init_inimigos (estado_s e)
 {
-	for (size_t i = 0; i < MAX_INIMIGOS; i++) {
-		e.inimigo[i] = nova_posicao_unica(&e);
-		e.num_inimigos++;
-	}
+	uchar N = min(MIN_INIMIGOS + e.nivel, MAX_INIMIGOS);
+	init_entidades(&e, e.inimigo, N, &e.num_inimigos);
 	return e;
 }
 
 estado_s init_obstaculos (estado_s e)
 {
-	for (size_t i = 0; i < MAX_OBSTACULOS; i++) {
-		e.obstaculo[i] = nova_posicao_unica(&e);
-		e.num_obstaculos++;
-	}
+	uchar N = min(MIN_OBSTACULOS + e.nivel, MAX_OBSTACULOS);
+	init_entidades(&e, e.obstaculo, N, &e.num_obstaculos);
 	return e;
 }
+#undef min
 
 estado_s init_jogador (estado_s e)
 {
@@ -89,13 +94,11 @@ estado_s init_porta (estado_s e)
 	return e;
 }
 
-estado_s init_estado (unsigned char nivel)
+estado_s init_estado (uchar nivel)
 {
 	estado_s ret = {0};
 
 	ret.nivel = nivel;
-	ret.num_inimigos = 0;
-	ret.num_obstaculos = 0;
 
 	ret = init_obstaculos(ret);
 	ret = init_porta(ret);

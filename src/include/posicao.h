@@ -3,8 +3,9 @@
 
 #define TAM		10
 
-typedef unsigned char abcissa;
-typedef unsigned char ordenada;
+typedef unsigned char uchar;
+typedef uchar abcissa;
+typedef uchar ordenada;
 
 typedef struct {
 	abcissa x;
