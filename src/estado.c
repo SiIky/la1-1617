@@ -91,7 +91,7 @@ estado_s init_porta (estado_s e)
 
 estado_s init_estado (unsigned char nivel)
 {
-	estado_s ret;
+	estado_s ret = {0};
 
 	ret.nivel = nivel;
 	ret.num_inimigos = 0;
