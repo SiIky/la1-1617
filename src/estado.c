@@ -4,25 +4,23 @@
 
 #include "estado.h"
 
-bool posicao_ocupada (const estado_p e, abcissa x, ordenada y)
+bool posicao_ocupada (const estado_p e, posicao_s p)
 {
 	return (e != NULL)
-		&& (pos_elem(e->inimigo, e->num_inimigos, x, y)
-		|| pos_elem(e->obstaculo, e->num_obstaculos, x, y)
-		|| posicao_igual(e->jog, x, y));
+		&& (pos_elem(e->inimigo, e->num_inimigos, p)
+		|| pos_elem(e->obstaculo, e->num_obstaculos, p)
+		|| posicao_igual(e->jog, p));
 }
 
 posicao_s nova_posicao_unica (const estado_p e)
 {
-	abcissa x;
-	ordenada y;
-
+	posicao_s ret = { .x = (~0), .y = (~0) };
 	do {
-		x = rand() % TAM;
-		y = rand() % TAM;
-	} while (posicao_ocupada(e, x, y));
+		ret.x = rand() % TAM;
+		ret.y = rand() % TAM;
+	} while (posicao_ocupada(e, ret));
 
-	return posicao_new(x, y);
+	return ret;
 }
 
 char * estado2str (const estado_p e)

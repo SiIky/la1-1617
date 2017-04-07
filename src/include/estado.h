@@ -26,7 +26,7 @@ estado_s str2estado (char * args);
 estado_s ler_estado (char * args);
 
 bool fim_de_ronda (const estado_p e);
-bool posicao_ocupada (const estado_p e, abcissa x, ordenada y);
+bool posicao_ocupada (const estado_p e, posicao_s p);
 posicao_s nova_posicao_unica (const estado_p e);
 void init_entidades (estado_p e, posicao_p p, uchar N, uchar * num);
 

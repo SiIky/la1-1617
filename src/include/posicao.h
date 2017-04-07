@@ -16,10 +16,9 @@ typedef struct {
 
 #include "bool.h"
 
-bool posicao_igual (posicao_s p, abcissa x, ordenada y);
-bool posicao_valida (abcissa x, ordenada y);
-bool pos_elem (const posicao_p p, size_t num, abcissa x, ordenada y);
-posicao_s posicao_cpy (posicao_s p);
+bool posicao_igual (posicao_s p1, posicao_s p2);
+bool posicao_valida (posicao_s p);
+bool pos_elem (const posicao_p p, size_t num, posicao_s q);
 posicao_s posicao_new (abcissa x, ordenada y);
 
 #endif /* _POSICAO_H */

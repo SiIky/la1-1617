@@ -19,18 +19,18 @@ void imprime_inimigos (const estado_p e)
 		imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
 }
 
-void imprime_jogada (const estado_p e, abcissa x, ordenada y)
+void imprime_jogada (const estado_p e, posicao_s p)
 {
-	if (e == NULL || !posicao_valida(x, y) || posicao_ocupada(e, x, y))
+	if (e == NULL || !posicao_valida(p) || posicao_ocupada(e, p))
 		return;
-	estado_s ne = (posicao_igual(e->porta, x, y) && fim_de_ronda(e)) ?
+	estado_s ne = (posicao_igual(e->porta, p) && fim_de_ronda(e)) ?
 		init_estado(e->nivel + 1):
-		move_jogador(*e, posicao_new(x, y));
+		move_jogador(*e, p);
 
 	char * query = estado2str(&ne);
 	if (query != NULL) {
 		GAME_LINK(query);
-		RECT_TRANSPARENTE(y, x, ESCALA);
+		RECT_TRANSPARENTE(p.y, p.x, ESCALA);
 		FECHA_A;
 	}
 }
@@ -55,14 +55,14 @@ void imprime_jogadas (const estado_p e)
 	abcissa x = e->jog.x;
 	ordenada y = e->jog.y;
 
-	imprime_jogada(e, x-1, y-1);
-	imprime_jogada(e, x-1, y);
-	imprime_jogada(e, x-1, y+1);
-	imprime_jogada(e, x,   y-1);
-	imprime_jogada(e, x,   y+1);
-	imprime_jogada(e, x+1, y-1);
-	imprime_jogada(e, x+1, y);
-	imprime_jogada(e, x+1, y+1);
+	imprime_jogada(e, posicao_new(x-1, y-1));
+	imprime_jogada(e, posicao_new(x-1, y));
+	imprime_jogada(e, posicao_new(x-1, y+1));
+	imprime_jogada(e, posicao_new(x,   y-1));
+	imprime_jogada(e, posicao_new(x,   y+1));
+	imprime_jogada(e, posicao_new(x+1, y-1));
+	imprime_jogada(e, posicao_new(x+1, y));
+	imprime_jogada(e, posicao_new(x+1, y+1));
 }
 
 void imprime_obstaculos (const estado_p e)
