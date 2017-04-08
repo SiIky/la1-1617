@@ -7,9 +7,10 @@
 
 void imprime_entidades (const posicao_p p, size_t max, char * img)
 {
+	size_t i = 0;
 	if (p == NULL)
 		return;
-	for (size_t i = 0; i < max; i++)
+	for (i = 0; i < max; i++)
 		IMAGE(p[i].x, p[i].y, ESCALA, img);
 }
 
@@ -21,13 +22,18 @@ void imprime_inimigos (const estado_p e)
 
 void imprime_jogada (const estado_p e, posicao_s p)
 {
+	estado_s ne;
+	char * query = NULL;
+
 	if (e == NULL || !posicao_valida(p) || posicao_ocupada(e, p))
 		return;
-	estado_s ne = (posicao_igual(e->porta, p) && fim_de_ronda(e)) ?
+
+	ne = (posicao_igual(e->porta, p) && fim_de_ronda(e)) ?
 		init_estado(e->nivel + 1):
 		move_jogador(*e, p);
 
-	char * query = estado2str(&ne);
+	query = estado2str(&ne);
+
 	if (query != NULL) {
 		GAME_LINK(query);
 		RECT_TRANSPARENTE(p.y, p.x, ESCALA);
@@ -37,23 +43,26 @@ void imprime_jogada (const estado_p e, posicao_s p)
 
 void imprime_jogadas (const estado_p e)
 {
+	abcissa x = (~0);
+	ordenada y = (~0);
+
 	if (e == NULL)
 		return;
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
-//	abcissa mx = e->jog.x - 1;
-//	ordenada my = e->jog.y - 1;
-//
-//	abcissa Mx = e->jog.x + 1;
-//	ordenada My = e->jog.y + 1;
-//
-//	for (abcissa x = mx; x <= Mx; x++)
-//		for (ordenada y = my; y <= My; y++)
-//			imprime_jogada(e, x, y);
+	/*	abcissa mx = e->jog.x - 1; */
+	/*	ordenada my = e->jog.y - 1; */
+
+	/*	abcissa Mx = e->jog.x + 1; */
+	/*	ordenada My = e->jog.y + 1; */
+
+	/*	for (abcissa x = mx; x <= Mx; x++) */
+	/*		for (ordenada y = my; y <= My; y++) */
+	/*			imprime_jogada(e, x, y); */
 
 	/* desta forma estupida o bug dos cantos nao acontece */
-	abcissa x = e->jog.x;
-	ordenada y = e->jog.y;
+	x = e->jog.x;
+	y = e->jog.y;
 
 	imprime_jogada(e, posicao_new(x-1, y-1));
 	imprime_jogada(e, posicao_new(x-1, y));
@@ -97,8 +106,10 @@ void imprime_casa (size_t l, size_t c)
 
 void imprime_tabuleiro (abcissa L, ordenada C)
 {
-	for (size_t l = 0; l < L; l++) {
-		for (size_t c = 0; c < C; c++)
+	size_t l = 0;
+	size_t c = 0;
+	for (l = 0; l < L; l++) {
+		for (c = 0; c < C; c++)
 			imprime_casa(l, c);
 		putchar('\n');
 	}

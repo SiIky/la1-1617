@@ -14,7 +14,7 @@ bool posicao_ocupada (const estado_p e, posicao_s p)
 
 posicao_s nova_posicao_unica (const estado_p e)
 {
-	posicao_s ret = { .x = (~0), .y = (~0) };
+	posicao_s ret = { (~0), (~0) };
 	do {
 		ret.x = rand() % TAM;
 		ret.y = rand() % TAM;
@@ -25,13 +25,14 @@ posicao_s nova_posicao_unica (const estado_p e)
 
 char * estado2str (const estado_p e)
 {
-	if (e == NULL)
-		return NULL;
+	size_t i = 0;
 	static char buffer[MAX_BUFFER];
 	char *p = (char *) e;
 	buffer[0] = '\0';
 
-	for (size_t i = 0; i < sizeof(estado_s); i++)
+	if (e == NULL)
+		return NULL;
+	for (i = 0; i < sizeof(estado_s); i++)
 		sprintf(buffer, "%s%02x", buffer, p[i]);
 	return buffer;
 }
@@ -40,9 +41,10 @@ estado_s str2estado (char * args)
 {
 	estado_s e;
 	char * p = (char *) &e;
+	unsigned int d;
+	size_t i = 0;
 
-	for (size_t i = 0; i < sizeof(estado_s); i++) {
-		unsigned int d;
+	for (i = 0; i < sizeof(estado_s); i++) {
 		sscanf(args + (i << 1), "%2x", &d);
 		p[i] = (char) d;
 	}
@@ -52,9 +54,9 @@ estado_s str2estado (char * args)
 
 bool fim_de_ronda (const estado_p e)
 {
-	// Temporário, só para a primeira etapa.
+	/* Temporário, só para a primeira etapa. */
 	return true || e != NULL;
-	//return e != NULL && e->num_inimigos == 0;
+	/*return e != NULL && e->num_inimigos == 0;*/
 }
 
 void init_entidades (estado_p e, posicao_p p, uchar N, uchar * num)

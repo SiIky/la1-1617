@@ -8,11 +8,11 @@
 
 int main (void)
 {
+	estado_s e = ler_estado(getenv("QUERY_STRING"));
+
 	CONTENT_TYPE;
 
 	srand(time(NULL));
-
-	estado_s e = ler_estado(getenv("QUERY_STRING"));
 
 	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
 		imprime_jogo(&e);

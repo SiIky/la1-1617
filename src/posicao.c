@@ -17,15 +17,16 @@ bool posicao_igual (posicao_s p1, posicao_s p2)
 bool pos_elem (const posicao_p p, size_t num, posicao_s q)
 {
 	bool ret = false;
+	size_t i = 0;
 	if (p != NULL)
-		for (size_t i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
+		for (i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
 	return ret;
 }
 
 posicao_s posicao_new (abcissa x, ordenada y)
 {
-	return (posicao_s) {
-		.x = x,
-		.y = y
-	};
+	posicao_s r;
+	r.x = x;
+	r.y = y;
+	return r;
 }
