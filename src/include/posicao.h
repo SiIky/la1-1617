@@ -13,9 +13,9 @@ typedef struct {
 } posicao_s, *posicao_p;
 
 #include <stddef.h>
+#include <stdbool.h>
 
-#include "bool.h"
-
+posicao_s str2posicao(char * args);
 bool posicao_igual (posicao_s p1, posicao_s p2);
 bool posicao_valida (posicao_s p);
 bool pos_elem (const posicao_p p, size_t num, posicao_s q);

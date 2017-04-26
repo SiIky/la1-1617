@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,31 +26,77 @@ posicao_s nova_posicao_unica (const estado_p e)
 
 char * estado2str (const estado_p e)
 {
+#define write(TO, FROM, W)
 	size_t i = 0;
 	static char buffer[MAX_BUFFER];
+	char tmp[4];
 	char *p = (char *) e;
 	buffer[0] = '\0';
 
+	/* nivel; */
+	sprintf(tmp, "%02x", p[i]);
+	strcat(buffer,
+	i++;
+
+
+	/* num_inimigos; */
+	sprintf(tmp, "%02x", p[i]);
+	strcat();
+	i++;
+
+	/* num_obstaculos; */
+
+	/* jog; */
+	/* porta; */
+	/* inimigo; */
+
 	if (e == NULL)
 		return NULL;
+
 	for (i = 0; i < sizeof(estado_s); i++)
 		sprintf(buffer, "%s%02x", buffer, p[i]);
 	return buffer;
+#undef write
 }
 
 estado_s str2estado (char * args)
 {
+#define read(STR, I, W, D) \
+	sscanf((STR) + (I), "%2x", &(D)); \
+	(W) = (uchar) (D); \
+	(I) += 2;
+
 	estado_s e;
-	char * p = (char *) &e;
-	unsigned int d;
+	unsigned int d = 0;
 	size_t i = 0;
 
-	for (i = 0; i < sizeof(estado_s); i++) {
-		sscanf(args + (i << 1), "%2x", &d);
-		p[i] = (char) d;
-	}
+	/* nivel; */
+	read(args, i, e.nivel, d);
+
+	/* num_inimigos; */
+	read(args, i, e.num_inimigos, d);
+
+	/* num_obstaculos; */
+	read(args, i, e.num_obstaculos, d);
+
+	/* jog; */
+	e.jog = str2posicao(args + i);
+	i += 2;
+
+	/* porta; */
+	e.porta = str2posicao(args + i);
+	i += 2;
+
+	/* inimigo */
+	for (d = 0; d < e.num_inimigos; d++, i += 2)
+		e.inimigo[d] = str2posicao(args + i);
+
+	/* obstaculo */
+	for (d = 0; d < e.num_obstaculos; d++, i += 2)
+		e.obstaculo[d] = str2posicao(args + i);
 
 	return e;
+#undef read
 }
 
 bool fim_de_ronda (const estado_p e)
@@ -70,6 +117,11 @@ void init_entidades (estado_p e, posicao_p p, uchar N, uchar * num)
 estado_s init_inimigos (estado_s e)
 {
 	uchar N = min(MIN_INIMIGOS + e.nivel, MAX_INIMIGOS);
+
+	e.inimigo = (posicao_p) calloc(N, sizeof(posicao_s));
+
+	assert(e.inimigo != NULL);
+
 	init_entidades(&e, e.inimigo, N, &e.num_inimigos);
 	return e;
 }
@@ -77,6 +129,11 @@ estado_s init_inimigos (estado_s e)
 estado_s init_obstaculos (estado_s e)
 {
 	uchar N = min(MIN_OBSTACULOS + e.nivel, MAX_OBSTACULOS);
+
+	e.obstaculo = (posicao_p) calloc(N, sizeof(posicao_s));
+
+	assert(e.obstaculo != NULL);
+
 	init_entidades(&e, e.obstaculo, N, &e.num_obstaculos);
 	return e;
 }

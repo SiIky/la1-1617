@@ -61,8 +61,7 @@ void imprime_jogadas (const estado_p e)
 	/*			imprime_jogada(e, x, y); */
 
 	/* desta forma estupida o bug dos cantos nao acontece */
-	x = e->jog.x;
-	y = e->jog.y;
+	x = e->jog.x, y = e->jog.y;
 
 	imprime_jogada(e, posicao_new(x-1, y-1));
 	imprime_jogada(e, posicao_new(x-1, y));

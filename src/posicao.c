@@ -1,4 +1,36 @@
+#include <assert.h>
+#include <stdio.h>
+
 #include "posicao.h"
+
+char * posicao2str (posicao_p p)
+{
+	static char ret[sizeof(posicao_s) << 1];
+	assert(p != NULL);
+
+	sprintf(ret, "%02x", p->x);
+	sprintf(ret+2, "%02x", p->y);
+
+	return ret;
+}
+
+posicao_s str2posicao (char * args)
+{
+	posicao_s ret = {0};
+	unsigned int d = 0;
+
+	assert(args != NULL);
+
+	sscanf(args, "%2x", &d);
+	ret.x = (uchar) d;
+
+	args += 2;
+
+	sscanf(args, "%2x", &d);
+	ret.y = (uchar) d;
+
+	return ret;
+}
 
 bool posicao_valida (posicao_s p)
 {

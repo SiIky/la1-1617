@@ -17,8 +17,8 @@ typedef struct {
 	uchar num_obstaculos;
 	posicao_s jog;
 	posicao_s porta;
-	posicao_s inimigo[MAX_INIMIGOS];
-	posicao_s obstaculo[MAX_OBSTACULOS];
+	posicao_p inimigo;
+	posicao_p obstaculo;
 } estado_s, *estado_p;
 
 char * estado2str (const estado_p e);
