@@ -2,7 +2,7 @@ EXEC=rogue
 DFLAGS=-ansi -static -Wall -Wextra -Werror -pedantic -Og -g -Iinclude/
 CFLAGS=-ansi -static -Wall -Wextra -Werror -pedantic -O3 -Iinclude/
 IMAGENS=images/Char_14.png images/character_21.png images/lava_pool1.png images/tombstone.png
-FICHEIROS=estado.c html.c main.c Makefile posicao.c include/bool.h include/estado.h include/html.h include/posicao.h
+FICHEIROS=estado.c html.c main.c Makefile posicao.c entidades.c include/entidades.h include/estado.h include/html.h include/posicao.h
 OBJS=estado.o html.o main.o posicao.o
 
 install: all $(IMAGENS)
