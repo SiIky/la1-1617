@@ -5,13 +5,13 @@
 
 #include "html.h"
 
-void imprime_entidades (const posicao_p p, size_t max, char * img)
+void imprime_entidades (const entidades p, size_t max, char * img)
 {
 	size_t i = 0;
 	if (p == NULL)
 		return;
 	for (i = 0; i < max; i++)
-		IMAGE(p[i].x, p[i].y, ESCALA, img);
+		IMAGE(p[i].pos.x, p[i].pos.y, ESCALA, img);
 }
 
 void imprime_inimigos (const estado_p e)
@@ -22,14 +22,19 @@ void imprime_inimigos (const estado_p e)
 
 void imprime_jogada (const estado_p e, posicao_s p)
 {
-	estado_s ne;
+	estado_s ne = *e;
 	char * query = NULL;
-
-	if (e == NULL || !posicao_valida(p) || posicao_ocupada(e, p))
+	size_t i;
+	if (e == NULL
+		|| !posicao_valida(p)
+		|| pos_inimigos(e->obstaculo, p , e->num_obstaculos)
+		|| posicao_igual(e->jog.pos, p))
 		return;
 
 	ne = (posicao_igual(e->porta, p) && fim_de_ronda(e)) ?
 		init_estado(e->nivel + 1):
+		(i= pos_inimigos(e->inimigo,p,e->num_inimigos))<e->num_inimigos ?
+		ataca(e, e->inimigo , i) :
 		move_jogador(*e, p);
 
 	query = estado2str(&ne);
@@ -61,7 +66,8 @@ void imprime_jogadas (const estado_p e)
 	/*			imprime_jogada(e, x, y); */
 
 	/* desta forma estupida o bug dos cantos nao acontece */
-	x = e->jog.x, y = e->jog.y;
+	x = e->jog.pos.x;
+	y = e->jog.pos.y;
 
 	imprime_jogada(e, posicao_new(x-1, y-1));
 	imprime_jogada(e, posicao_new(x-1, y));

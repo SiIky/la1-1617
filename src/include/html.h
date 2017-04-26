@@ -46,7 +46,7 @@
 			(E)\
 			))
 
-void imprime_entidades (const posicao_p p, size_t max, char * img);
+void imprime_entidades (const entidades p, size_t max, char * img);
 void imprime_inimigos (const estado_p e);
 void imprime_jogada (const estado_p e, posicao_s p);
 void imprime_jogadas (const estado_p e);

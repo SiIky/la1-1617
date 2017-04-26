@@ -4,13 +4,14 @@
 #include <string.h>
 
 #include "estado.h"
+#include "entidades.c"
 
 bool posicao_ocupada (const estado_p e, posicao_s p)
 {
 	return (e != NULL)
-		&& (pos_elem(e->inimigo, e->num_inimigos, p)
-		|| pos_elem(e->obstaculo, e->num_obstaculos, p)
-		|| posicao_igual(e->jog, p));
+		&& (pos_inimigos(e->inimigo, p ,  e->num_inimigos)
+		|| pos_inimigos(e->obstaculo,p, e->num_obstaculos)
+		|| posicao_igual(e->jog.pos, p));
 }
 
 posicao_s nova_posicao_unica (const estado_p e)
@@ -106,11 +107,13 @@ bool fim_de_ronda (const estado_p e)
 	/*return e != NULL && e->num_inimigos == 0;*/
 }
 
-void init_entidades (estado_p e, posicao_p p, uchar N, uchar * num)
+void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
 {
 	if (e != NULL && p != NULL && num != NULL)
-		for ((*num) = 0; (*num) < N; (*num)++)
-			p[(*num)] = nova_posicao_unica(e);
+		for ((*num) = 0; (*num) < N; (*num)++){
+			p[(*num)].pos = nova_posicao_unica(e);
+			p[(*num)].vida = 2;
+		}
 }
 
 #define min(A, B)	((A) < (B)) ? (A) : (B)
@@ -141,7 +144,8 @@ estado_s init_obstaculos (estado_s e)
 
 estado_s init_jogador (estado_s e)
 {
-	e.jog = nova_posicao_unica(&e);
+	e.jog.pos = nova_posicao_unica(&e);
+	e.jog.vida = 3 + e.nivel;
 	return e;
 }
 
@@ -174,6 +178,16 @@ estado_s ler_estado (char * args)
 
 estado_s move_jogador (estado_s e, posicao_s p)
 {
-	e.jog = p;
+	e.jog.pos = p;
 	return e;
+}
+
+estado_s ataca(estado_p e, entidades i, uchar I){
+	estado_s ne = *e;
+	entidade ni = *i;
+
+	ni.vida--;
+
+	ne.inimigo[I] = ni;
+	return ne;
 }
