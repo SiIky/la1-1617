@@ -4,8 +4,6 @@
 #define SVG_WIDTH	600
 #define SVG_HEIGHT	600
 #define ESCALA		40UL
-#define COR_PAR		"#00ff00"
-#define COR_IMPAR	"#ff0000"
 
 #define IMAGE_PATH	"http://localhost/images/"
 #define IMG_OBSTACULO	(IMAGE_PATH "lava_pool1.png")
@@ -46,14 +44,14 @@
 			(E)\
 			))
 
+void imprime_casa (size_t l, size_t c);
 void imprime_entidades (const entidades p, size_t max, char * img);
 void imprime_inimigos (const estado_p e);
 void imprime_jogada (const estado_p e, posicao_s p);
 void imprime_jogadas (const estado_p e);
-void imprime_obstaculos (const estado_p e);
-void imprime_casa (size_t l, size_t c);
-void imprime_tabuleiro (abcissa L, ordenada C);
 void imprime_jogo (const estado_p e);
-void imprime_porta (estado_s e);
+void imprime_obstaculos (const estado_p e);
+void imprime_porta (const estado_p e);
+void imprime_tabuleiro (abcissa L, ordenada C);
 
 #endif /* _HTML_H */

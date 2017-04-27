@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 
 #include "posicao.h"
@@ -8,42 +9,47 @@
 void imprime_entidades (const entidades p, size_t max, char * img)
 {
 	size_t i = 0;
-	if (p == NULL)
-		return;
+
+	assert(p != NULL);
+	assert(img != NULL);
+
 	for (i = 0; i < max; i++)
 		IMAGE(p[i].pos.x, p[i].pos.y, ESCALA, img);
 }
 
 void imprime_inimigos (const estado_p e)
 {
-	if (e != NULL)
-		imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
+	assert(e != NULL);
+	imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
 }
 
 void imprime_jogada (const estado_p e, posicao_s p)
 {
-	estado_s ne = *e;
+	estado_s ne;
 	char * query = NULL;
 	size_t i;
-	if (e == NULL
-		|| !posicao_valida(p)
-		|| pos_inimigos(e->obstaculo, p , e->num_obstaculos)
-		|| posicao_igual(e->jog.pos, p))
+
+	assert(e != NULL);
+
+	ne = *e;
+
+	if (!posicao_valida(p)
+	    || pos_inimigos(ne.obstaculo, p , ne.num_obstaculos)
+	    || posicao_igual(ne.jog.pos, p))
 		return;
 
-	ne = (posicao_igual(e->porta, p) && fim_de_ronda(e)) ?
-		init_estado(e->nivel + 1):
-		(i= pos_inimigos(e->inimigo,p,e->num_inimigos))<e->num_inimigos ?
-		ataca(e, e->inimigo , i) :
-		move_jogador(*e, p);
+	ne = (posicao_igual(ne.porta, p) && fim_de_ronda(&ne)) ?
+		init_estado(ne.nivel + 1) :
+		((i = pos_inimigos_ind(ne.inimigo, p, ne.num_inimigos)) < ne.num_inimigos) ?
+		ataca(&ne, ne.inimigo, i) :
+		move_jogador(ne, p);
 
 	query = estado2str(&ne);
 
-	if (query != NULL) {
-		GAME_LINK(query);
-		RECT_TRANSPARENTE(p.y, p.x, ESCALA);
-		FECHA_A;
-	}
+	assert(query != NULL);
+	GAME_LINK(query);
+	RECT_TRANSPARENTE(p.y, p.x, ESCALA);
+	FECHA_A;
 }
 
 void imprime_jogadas (const estado_p e)
@@ -51,8 +57,8 @@ void imprime_jogadas (const estado_p e)
 	abcissa x = (~0);
 	ordenada y = (~0);
 
-	if (e == NULL)
-		return;
+	assert(e != NULL);
+
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
 	/*	abcissa mx = e->jog.x - 1; */
@@ -81,8 +87,8 @@ void imprime_jogadas (const estado_p e)
 
 void imprime_obstaculos (const estado_p e)
 {
-	if (e != NULL)
-		imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
+	assert(e != NULL);
+	imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
 char * random_color (void)
@@ -97,8 +103,8 @@ char * random_color (void)
 #undef NUM_CORES
 
 	/* "#rrggbb0" */
-	static char ret[8] = "";
-	sprintf(ret, "#%06x", rgb);
+	static char ret[8] = "#";
+	sprintf(ret+1, "%06x", rgb);
 	ret[7] = '\0';
 
 	return ret;
@@ -120,28 +126,30 @@ void imprime_tabuleiro (abcissa L, ordenada C)
 	}
 }
 
-void imprime_porta (estado_s e)
+void imprime_porta (const estado_p e)
 {
-	IMAGE(e.porta.x, e.porta.y, ESCALA, IMG_PORTA);
+	assert(e != NULL);
+	IMAGE(e->porta.x, e->porta.y, ESCALA, IMG_PORTA);
 }
 
 void imprime_jogo (const estado_p e)
 {
-	if (e == NULL)
-		return;
+	assert(e != NULL);
 
-	COMMENT("tabuleiro");
-	imprime_tabuleiro(TAM, TAM);
+	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
+		COMMENT("tabuleiro");
+		imprime_tabuleiro(TAM, TAM);
 
-	COMMENT("porta");
-	imprime_porta(*e);
+		COMMENT("porta");
+		imprime_porta(e);
 
-	COMMENT("obstaculos");
-	imprime_obstaculos(e);
+		COMMENT("obstaculos");
+		imprime_obstaculos(e);
 
-	COMMENT("inimigos");
-	imprime_inimigos(e);
+		COMMENT("inimigos");
+		imprime_inimigos(e);
 
-	COMMENT("jogadas");
-	imprime_jogadas(e);
+		COMMENT("jogadas");
+		imprime_jogadas(e);
+	} FECHA_SVG;
 }

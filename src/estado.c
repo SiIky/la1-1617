@@ -4,19 +4,22 @@
 #include <string.h>
 
 #include "estado.h"
-#include "entidades.c"
+#include "entidades.h"
 
 bool posicao_ocupada (const estado_p e, posicao_s p)
 {
-	return (e != NULL)
-		&& (pos_inimigos(e->inimigo, p ,  e->num_inimigos)
-		|| pos_inimigos(e->obstaculo,p, e->num_obstaculos)
+	assert(e != NULL);
+	return (pos_inimigos(e->inimigo, p,  e->num_inimigos)
+		|| pos_inimigos(e->obstaculo, p,  e->num_obstaculos)
 		|| posicao_igual(e->jog.pos, p));
 }
 
 posicao_s nova_posicao_unica (const estado_p e)
 {
 	posicao_s ret = { (~0), (~0) };
+
+	assert(e != NULL);
+
 	do {
 		ret.x = rand() % TAM;
 		ret.y = rand() % TAM;
@@ -27,104 +30,62 @@ posicao_s nova_posicao_unica (const estado_p e)
 
 char * estado2str (const estado_p e)
 {
-#define write(TO, FROM, W)
-	size_t i = 0;
-	static char buffer[MAX_BUFFER];
-	char tmp[4];
-	char *p = (char *) e;
-	buffer[0] = '\0';
+	static char ret[MAX_BUFFER] = "";
+	const char * p = (char *) e;
+	char tmp[sizeof(char) + 1] = "";
+	size_t r = 0;
 
-	/* nivel; */
-	sprintf(tmp, "%02x", p[i]);
-	strcat(buffer,
-	i++;
+	assert(e != NULL);
 
+	ret[0] = '\0';
 
-	/* num_inimigos; */
-	sprintf(tmp, "%02x", p[i]);
-	strcat();
-	i++;
+	for (r = 0; r < sizeof(estado_s); r++) {
+		sprintf(tmp, "%02x", p[r]);
+		strcat(&ret[r << 1], tmp);
+	}
 
-	/* num_obstaculos; */
-
-	/* jog; */
-	/* porta; */
-	/* inimigo; */
-
-	if (e == NULL)
-		return NULL;
-
-	for (i = 0; i < sizeof(estado_s); i++)
-		sprintf(buffer, "%s%02x", buffer, p[i]);
-	return buffer;
-#undef write
+	return ret;
 }
 
 estado_s str2estado (char * args)
 {
-#define read(STR, I, W, D) \
-	sscanf((STR) + (I), "%2x", &(D)); \
-	(W) = (uchar) (D); \
-	(I) += 2;
+	estado_s ret;
+	char * p = (char *) &ret;
+	unsigned int w = 0;
+	size_t r = 0;
 
-	estado_s e;
-	unsigned int d = 0;
-	size_t i = 0;
+	assert(args != NULL);
 
-	/* nivel; */
-	read(args, i, e.nivel, d);
+	for (r = 0; r < sizeof(estado_s); r++) {
+		sscanf(&args[r << 1], "%2x", &w);
+		p[r] = (char) w;
+	}
 
-	/* num_inimigos; */
-	read(args, i, e.num_inimigos, d);
-
-	/* num_obstaculos; */
-	read(args, i, e.num_obstaculos, d);
-
-	/* jog; */
-	e.jog = str2posicao(args + i);
-	i += 2;
-
-	/* porta; */
-	e.porta = str2posicao(args + i);
-	i += 2;
-
-	/* inimigo */
-	for (d = 0; d < e.num_inimigos; d++, i += 2)
-		e.inimigo[d] = str2posicao(args + i);
-
-	/* obstaculo */
-	for (d = 0; d < e.num_obstaculos; d++, i += 2)
-		e.obstaculo[d] = str2posicao(args + i);
-
-	return e;
-#undef read
+	return ret;
 }
 
 bool fim_de_ronda (const estado_p e)
 {
-	/* Temporário, só para a primeira etapa. */
-	return true || e != NULL;
-	/*return e != NULL && e->num_inimigos == 0;*/
+	assert(e != NULL);
+	return e->num_inimigos == 0;
 }
 
 void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
 {
-	if (e != NULL && p != NULL && num != NULL)
-		for ((*num) = 0; (*num) < N; (*num)++){
-			p[(*num)].pos = nova_posicao_unica(e);
-			p[(*num)].vida = 2;
-		}
+	assert(e != NULL);
+	assert(p != NULL);
+	assert(num != NULL);
+
+	for ((*num) = 0; (*num) < N; (*num)++) {
+		p[(*num)].pos = nova_posicao_unica(e);
+		p[(*num)].vida = 2;
+	}
 }
 
 #define min(A, B)	((A) < (B)) ? (A) : (B)
 estado_s init_inimigos (estado_s e)
 {
 	uchar N = min(MIN_INIMIGOS + e.nivel, MAX_INIMIGOS);
-
-	e.inimigo = (posicao_p) calloc(N, sizeof(posicao_s));
-
-	assert(e.inimigo != NULL);
-
 	init_entidades(&e, e.inimigo, N, &e.num_inimigos);
 	return e;
 }
@@ -132,11 +93,6 @@ estado_s init_inimigos (estado_s e)
 estado_s init_obstaculos (estado_s e)
 {
 	uchar N = min(MIN_OBSTACULOS + e.nivel, MAX_OBSTACULOS);
-
-	e.obstaculo = (posicao_p) calloc(N, sizeof(posicao_s));
-
-	assert(e.obstaculo != NULL);
-
 	init_entidades(&e, e.obstaculo, N, &e.num_obstaculos);
 	return e;
 }
@@ -161,10 +117,12 @@ estado_s init_estado (uchar nivel)
 
 	ret.nivel = nivel;
 
-	ret = init_obstaculos(ret);
-	ret = init_porta(ret);
-	ret = init_inimigos(ret);
 	ret = init_jogador(ret);
+
+	ret = init_obstaculos(ret);
+	ret = init_inimigos(ret);
+
+	ret = init_porta(ret);
 
 	return ret;
 }
@@ -182,12 +140,20 @@ estado_s move_jogador (estado_s e, posicao_s p)
 	return e;
 }
 
-estado_s ataca(estado_p e, entidades i, uchar I){
+estado_s ataca(const estado_p e, const entidades i, uchar I)
+{
 	estado_s ne = *e;
-	entidade ni = *i;
+	entidade ni = i[I];
+
+	assert(e != NULL);
+	assert(i != NULL);
 
 	ni.vida--;
 
 	ne.inimigo[I] = ni;
+
+	if (entidade_dead(&ni))
+		ne.num_inimigos = entidade_remove(ne.inimigo, I, ne.num_inimigos);
+
 	return ne;
 }

@@ -37,7 +37,6 @@ estado_s init_jogador (estado_s e);
 estado_s init_obstaculos (estado_s e);
 estado_s init_porta (estado_s e);
 estado_s move_jogador (estado_s e, posicao_s p);
-estado_s ataca(estado_p e, entidades i, uchar I);
-
+estado_s ataca(const estado_p e, const entidades i, uchar I);
 
 #endif /* _ESTADO_H */

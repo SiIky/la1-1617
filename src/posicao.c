@@ -50,8 +50,8 @@ bool pos_elem (const posicao_p p, size_t num, posicao_s q)
 {
 	bool ret = false;
 	size_t i = 0;
-	if (p != NULL)
-		for (i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
+	assert(p != NULL);
+	for (i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
 	return ret;
 }
 

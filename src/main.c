@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,15 +9,15 @@
 
 int main (void)
 {
-	estado_s e = ler_estado(getenv("QUERY_STRING"));
-
-	CONTENT_TYPE;
+	estado_s e;
 
 	srand(time(NULL));
 
-	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
-		imprime_jogo(&e);
-	} FECHA_SVG;
+	e = ler_estado(getenv("QUERY_STRING"));
+
+	CONTENT_TYPE;
+
+	imprime_jogo(&e);
 
 	return 0;
 }
