@@ -8,8 +8,6 @@ typedef struct {
 
 bool pos_inimigos (const entidades e, posicao_s p, size_t num_inimigos);
 size_t pos_inimigos_ind (const entidades e, posicao_s p, size_t num_inimigos);
-char * entidade2str (const entidades e);
-entidade str2entidade (const char * args);
 uchar entidade_remove (entidades e, size_t i, size_t N);
 bool entidade_dead (const entidades e);
 

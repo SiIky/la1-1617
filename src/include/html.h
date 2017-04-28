@@ -37,21 +37,17 @@
 			(I)\
 			))
 
-#define RECT_TRANSPARENTE(L, C, E)		(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu STYLE=\"fill-opacity:0\"/>\n",\
+#define RECT_TRANSPARENTE(L, C, E)	(printf("<RECT Y=%lu X=%lu WIDTH=%lu HEIGHT=%lu STYLE=\"fill-opacity:0\"/>\n",\
 			((L) * (E)),\
 			((C) * (E)),\
 			(E),\
 			(E)\
 			))
 
-void imprime_casa (size_t l, size_t c);
-void imprime_entidades (const entidades p, size_t max, char * img);
-void imprime_inimigos (const estado_p e);
-void imprime_jogada (const estado_p e, posicao_s p);
-void imprime_jogadas (const estado_p e);
+#define IMPRIME_CASA(L, C)		RECT(l, c, ESCALA, random_color())
+
+#include "jogo.h"
+
 void imprime_jogo (const estado_p e);
-void imprime_obstaculos (const estado_p e);
-void imprime_porta (const estado_p e);
-void imprime_tabuleiro (abcissa L, ordenada C);
 
 #endif /* _HTML_H */

@@ -3,13 +3,14 @@ FLAGS=-ansi -static -Wall -Wextra -Werror -pedantic -Iinclude/
 DFLAGS=$(FLAGS) -g
 CFLAGS=$(FLAGS) -O3
 IMAGENS=images/Char_14.png images/character_21.png images/lava_pool1.png images/tombstone.png
-FICHEIROS=entidades.c estado.c html.c include/entidades.h include/estado.h include/html.h include/posicao.h main.c posicao.c
-OBJS=entidades.o estado.o html.o main.o posicao.o
+FICHEIROS=entidades.c estado.c html.c include/check.h include/entidades.h include/estado.h include/html.h include/jogo.h include/posicao.h jogo.c main.c posicao.c
+OBJS=entidades.o estado.o html.o jogo.o main.o posicao.o
 
 debug: $(FICHEIROS)
 	cc $(DFLAGS) -c entidades.c
 	cc $(DFLAGS) -c estado.c
 	cc $(DFLAGS) -c html.c
+	cc $(DFLAGS) -c jogo.c
 	cc $(DFLAGS) -c main.c
 	cc $(DFLAGS) -c posicao.c
 	cc $(DFLAGS) $(OBJS) -o $(EXEC)
@@ -18,6 +19,7 @@ all: $(FICHEIROS)
 	cc $(CFLAGS) -c entidades.c
 	cc $(CFLAGS) -c estado.c
 	cc $(CFLAGS) -c html.c
+	cc $(CFLAGS) -c jogo.c
 	cc $(CFLAGS) -c main.c
 	cc $(CFLAGS) -c posicao.c
 	cc $(CFLAGS) $(OBJS) -o $(EXEC)

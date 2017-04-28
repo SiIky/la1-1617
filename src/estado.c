@@ -1,14 +1,14 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "check.h"
 #include "estado.h"
 #include "entidades.h"
 
 bool posicao_ocupada (const estado_p e, posicao_s p)
 {
-	assert(e != NULL);
+	check(e != NULL);
 	return (pos_inimigos(e->inimigo, p,  e->num_inimigos)
 		|| pos_inimigos(e->obstaculo, p,  e->num_obstaculos)
 		|| posicao_igual(e->jog.pos, p));
@@ -18,7 +18,7 @@ posicao_s nova_posicao_unica (const estado_p e)
 {
 	posicao_s ret = { (~0), (~0) };
 
-	assert(e != NULL);
+	check(e != NULL);
 
 	do {
 		ret.x = rand() % TAM;
@@ -32,10 +32,10 @@ char * estado2str (const estado_p e)
 {
 	static char ret[MAX_BUFFER] = "";
 	const char * p = (char *) e;
-	char tmp[sizeof(char) + 1] = "";
+	char tmp[(sizeof(char) << 1) + 1] = "";
 	size_t r = 0;
 
-	assert(e != NULL);
+	check(e != NULL);
 
 	ret[0] = '\0';
 
@@ -54,7 +54,7 @@ estado_s str2estado (char * args)
 	unsigned int w = 0;
 	size_t r = 0;
 
-	assert(args != NULL);
+	check(args != NULL);
 
 	for (r = 0; r < sizeof(estado_s); r++) {
 		sscanf(&args[r << 1], "%2x", &w);
@@ -66,15 +66,15 @@ estado_s str2estado (char * args)
 
 bool fim_de_ronda (const estado_p e)
 {
-	assert(e != NULL);
+	check(e != NULL);
 	return e->num_inimigos == 0;
 }
 
 void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
 {
-	assert(e != NULL);
-	assert(p != NULL);
-	assert(num != NULL);
+	check(e != NULL);
+	check(p != NULL);
+	check(num != NULL);
 
 	for ((*num) = 0; (*num) < N; (*num)++) {
 		p[(*num)].pos = nova_posicao_unica(e);
@@ -145,8 +145,8 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 	estado_s ne = *e;
 	entidade ni = i[I];
 
-	assert(e != NULL);
-	assert(i != NULL);
+	check(e != NULL);
+	check(i != NULL);
 
 	ni.vida--;
 
