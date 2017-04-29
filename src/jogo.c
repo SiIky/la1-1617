@@ -36,11 +36,16 @@ uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
 	if (!jogada_valida(&e, &p))
 		return 0;
 
-	e = (posicao_igual(e.porta, p) && fim_de_ronda(&e)) ?
-		init_estado(e.nivel + 1) :
-		((i = pos_inimigos_ind(e.inimigo, p, e.num_inimigos)) < e.num_inimigos) ?
+	e = ((i = pos_inimigos_ind(e.inimigo, p, e.num_inimigos)) < e.num_inimigos) ?
 		ataca(&e, e.inimigo, i) :
 		move_jogador(e, p);
+
+	/*
+	 * se o jog tiver na porta e matar o ult
+	 * inimigo tem de passar ao nivel seguinte
+	 */
+	if (posicao_igual(e.porta, e.jog.pos) && fim_de_ronda(&e))
+		e = init_estado(e.nivel + 1);
 
 	link = estado2str(&e);
 
