@@ -42,14 +42,14 @@ void imprime_jogadas (const estado_p e)
 
 	check(e != NULL);
 
-	j = jogadas_possiveis(e),
-	  check(j != NULL);
+	j = jogadas_possiveis(e);
+	check(j != NULL);
 
 	/* imprimir o jogador */
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
 
 	/* imprimir as jogadas */
-	N = j->dest.x;
+	N = quantas_jogadas(j);
 	for (i = 0; i < N; i++)
 		imprime_jogada(j + i);
 }

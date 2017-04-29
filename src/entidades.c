@@ -8,9 +8,9 @@
 
 size_t pos_inimigos_ind (const entidades e, posicao_s p, size_t num_inimigos)
 {
-	size_t i = num_inimigos;
+	size_t i = 0;
 	check(e != NULL);
-	for (i = 0; i < num_inimigos && !(posicao_igual(e[i].pos, p)) ; i++);
+	for (i = 0; i < num_inimigos && !(posicao_igual(e[i].pos, p)); i++);
 	return i;
 }
 
@@ -30,8 +30,8 @@ uchar entidade_remove (entidades e, size_t i, size_t N)
 	check(e != NULL);
 	check(i < N);
 
-	for (; i < (N - 1); i++)
+	for (N--; i < N; i++)
 		e[i] = e[i+1];
 
-	return N - 1;
+	return N;
 }

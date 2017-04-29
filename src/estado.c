@@ -142,11 +142,14 @@ estado_s move_jogador (estado_s e, posicao_s p)
 
 estado_s ataca(const estado_p e, const entidades i, uchar I)
 {
-	estado_s ne = *e;
-	entidade ni = i[I];
+	estado_s ne;
+	entidade ni;
 
 	check(e != NULL);
 	check(i != NULL);
+
+	ne = *e;
+	ni = i[I];
 
 	ni.vida--;
 

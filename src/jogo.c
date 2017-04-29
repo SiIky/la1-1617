@@ -6,6 +6,17 @@
 
 #include "jogo.h"
 
+/*
+ * Tipos de movimento:
+ * - [X] Rei do Xadrez
+ * - [ ] Cavalo do Xadrez
+ * - [ ] Peao do Xadrez
+ * - [ ] Torre do Xadrez
+ * - [ ] Bispo do Xadrez
+ * - [ ] Rainha do Xadrez
+ * - [ ] Damas
+ */
+
 bool jogada_valida (const estado_p e, const posicao_p p)
 {
 	check(e != NULL);
@@ -27,7 +38,7 @@ uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
 
 	e = (posicao_igual(e.porta, p) && fim_de_ronda(&e)) ?
 		init_estado(e.nivel + 1) :
-		((i = pos_inimigos_ind(e.inimigo, p, e. num_inimigos)) < e.num_inimigos) ?
+		((i = pos_inimigos_ind(e.inimigo, p, e.num_inimigos)) < e.num_inimigos) ?
 		ataca(&e, e.inimigo, i) :
 		move_jogador(e, p);
 
@@ -43,40 +54,52 @@ uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
 uchar jogadas_xadrez_rei (const estado_p e, jogada_p j)
 {
 	uchar ret = 0;
+	abcissa x = ~0;
+	ordenada y = ~0;
 
 	check(e != NULL);
 	check(j != NULL);
 
-#define F(X, Y) ret += jogadas_aux(*e, (j + ret), posicao_new(e->jog.pos.y + (X), e->jog.pos.x + (Y)))
-	F(-1, -1);
-	F(-1, +0);
-	F(-1, +1);
-	F(+0, -1);
-	F(+0, +1);
-	F(+1, -1);
-	F(+1, +0);
-	F(+1, +1);
-#undef F
+	/*
+	 *    -1 0 +1
+	 * -1 | | | |
+	 *    -------
+	 *  0 | |J| |
+	 *    -------
+	 * +1 | | | |
+	 */
+	for (x = e->jog.pos.x - 1; x <= e->jog.pos.x + 1; x++)
+		for (y = e->jog.pos.y - 1; y <= e->jog.pos.y + 1; y++)
+			ret += jogadas_aux(*e, (j + ret), posicao_new(x, y));
 
 	return ret;
 }
 
 jogada_p jogadas_possiveis (const estado_p e)
 {
+	/* numero maximo de jogadas */
+#define N    8
+	/* tamanho do array em bytes */
+#define SIZE (1 + (sizeof(jogada_s) * N))
+
 	/*
 	 * [0] uchar => quantas jogadas possiveis existem
 	 * [1] jogada_s
 	 * ..
 	 * [N] jogada_s
 	 */
-#define N (sizeof(jogada_s) * 9)
-	static jogada_s ret[N] = { 0 };
+	static uchar arr[SIZE] = "";
+	jogada_p ret = (jogada_p) (arr + 1);
 	uchar w = 0;
 
 	check(e != NULL);
 
-	w = jogadas_xadrez_rei(e, ret + 1);
+	arr[0] = '\0';
 
-	return ret->dest.x = w, ret;
+	w = jogadas_xadrez_rei(e, ret);
+
+	arr[0] = w;
+	return ret;
+#undef SIZE
 #undef N
 }

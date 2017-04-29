@@ -4,6 +4,8 @@
 #include "posicao.h"
 #include "estado.h"
 
+#define quantas_jogadas(J) (*(((uchar *) (J)) - 1))
+
 typedef struct {
 	posicao_s dest;
 	char link[MAX_BUFFER];
