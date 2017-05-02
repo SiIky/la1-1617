@@ -129,9 +129,23 @@ estado_s init_estado (uchar nivel)
 
 estado_s ler_estado (char * args)
 {
-	return (args == NULL || strlen(args) == 0) ?
-		init_estado(0) :
-		str2estado(args);
+#define coisas(COND, STR)           \
+	if (COND) {                 \
+		perror(STR);        \
+		exit(EXIT_FAILURE); \
+	}
+	estado_s ret = { 0 };
+
+	if (args == NULL || (strlen(args) == 0)) {
+		ret = init_estado(0);
+	} else {
+		FILE * f = fopen(SHRUG, "r");
+		coisas(f == NULL, "could not open");
+		fread(&ret, sizeof(estado_s), 1, f);
+	}
+
+	return ret;
+#undef coisas
 }
 
 estado_s move_jogador (estado_s e, posicao_s p)
@@ -159,4 +173,17 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 		ne.num_inimigos = entidade_remove(ne.inimigo, I, ne.num_inimigos);
 
 	return ne;
+}
+
+void escreve_estado (const estado_p e)
+{
+	check(e != NULL);
+
+	FILE * f = fopen(SHRUG, "w");
+
+	check(f != NULL);
+
+	fwrite(e, sizeof(estado_s), 1, f);
+
+	fclose(f);
 }

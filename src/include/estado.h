@@ -1,6 +1,8 @@
 #ifndef _ESTADO_H
 #define _ESTADO_H
 
+#include <stdio.h>
+
 #include "posicao.h"
 #include "entidades.h"
 
@@ -22,10 +24,12 @@ typedef struct {
 } estado_s, *estado_p;
 
 #define MAX_BUFFER	((sizeof(estado_s) << 1) + 1)
+#define SHRUG		("/tmp/ficheirola1")
 
 char * estado2str (const estado_p e);
 estado_s str2estado (char * args);
 estado_s ler_estado (char * args);
+void escreve_estado (const estado_p e);
 
 bool fim_de_ronda (const estado_p e);
 estado_s init_estado (uchar nivel);

@@ -87,6 +87,11 @@ uchar jogadas_xadrez_rei (const estado_p e, jogada_p j)
 	F(x+1, y+0);
 	F(x+1, y+1);
 #undef F
+	/*
+	   for (x = e->jog.pos.x - 1; x <= e->jog.pos.x + 1; x++)
+	   for (y = e->jog.pos.y - 1; y <= e->jog.pos.y + 1; y++)
+	   ret += jogadas_aux(*e, (j + ret), posicao_new(x, y));
+	   */
 
 	return ret;
 }

@@ -8,15 +8,15 @@
 
 int main (void)
 {
-	estado_s e;
-
 	srand(time(NULL));
 
-	e = ler_estado(getenv("QUERY_STRING"));
+	estado_s e = ler_estado(getenv("QUERY_STRING"));
 
 	CONTENT_TYPE;
 
 	imprime_jogo(&e);
+
+	escreve_estado(&e);
 
 	return 0;
 }
