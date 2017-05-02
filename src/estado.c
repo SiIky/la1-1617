@@ -70,7 +70,7 @@ bool fim_de_ronda (const estado_p e)
 	return e->num_inimigos == 0;
 }
 
-void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
+void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 {
 	check(e != NULL);
 	check(p != NULL);
@@ -78,7 +78,7 @@ void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
 
 	for ((*num) = 0; (*num) < N; (*num)++) {
 		p[(*num)].pos = nova_posicao_unica(e);
-		p[(*num)].vida = 2;
+		p[(*num)].vida = vida;
 	}
 }
 
@@ -86,14 +86,14 @@ void init_entidades (estado_p e, entidades p, uchar N, uchar * num)
 estado_s init_inimigos (estado_s e)
 {
 	uchar N = min(MIN_INIMIGOS + e.nivel, MAX_INIMIGOS);
-	init_entidades(&e, e.inimigo, N, &e.num_inimigos);
+	init_entidades(&e, e.inimigo, N, &e.num_inimigos, 1);
 	return e;
 }
 
 estado_s init_obstaculos (estado_s e)
 {
 	uchar N = min(MIN_OBSTACULOS + e.nivel, MAX_OBSTACULOS);
-	init_entidades(&e, e.obstaculo, N, &e.num_obstaculos);
+	init_entidades(&e, e.obstaculo, N, &e.num_obstaculos, 1);
 	return e;
 }
 #undef min
@@ -116,6 +116,8 @@ estado_s init_estado (uchar nivel)
 	estado_s ret = {0};
 
 	ret.nivel = nivel;
+	ret.matou = false;
+	ret.mov_type = MOV_TYPE_XADREZ_CAVALO;
 
 	ret = init_jogador(ret);
 
@@ -129,6 +131,7 @@ estado_s init_estado (uchar nivel)
 
 estado_s ler_estado (char * args)
 {
+#if 0
 #define coisas(COND, STR)           \
 	if (COND) {                 \
 		perror(STR);        \
@@ -146,11 +149,16 @@ estado_s ler_estado (char * args)
 
 	return ret;
 #undef coisas
+#endif
+	return (args == NULL || (strlen(args) == 0)) ?
+		init_estado(0) :
+		str2estado(args);
 }
 
 estado_s move_jogador (estado_s e, posicao_s p)
 {
 	e.jog.pos = p;
+	e.matou = false;
 	return e;
 }
 
@@ -169,8 +177,10 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 
 	ne.inimigo[I] = ni;
 
-	if (entidade_dead(&ni))
+	if (entidade_dead(&ni)) {
 		ne.num_inimigos = entidade_remove(ne.inimigo, I, ne.num_inimigos);
+		ne.matou = true;
+	}
 
 	return ne;
 }

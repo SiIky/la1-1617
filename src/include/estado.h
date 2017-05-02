@@ -6,6 +6,10 @@
 #include "posicao.h"
 #include "entidades.h"
 
+enum mov_type {
+	MOV_TYPE_XADREZ_REI,
+	MOV_TYPE_XADREZ_CAVALO,
+};
 
 #define MIN_INIMIGOS	(TAM)
 #define MIN_OBSTACULOS	(MIN_INIMIGOS << 1)
@@ -17,6 +21,8 @@ typedef struct {
 	uchar nivel;
 	uchar num_inimigos;
 	uchar num_obstaculos;
+	bool matou;
+	enum mov_type mov_type;
 	entidade jog;
 	posicao_s porta;
 	entidade inimigo[MAX_INIMIGOS];
