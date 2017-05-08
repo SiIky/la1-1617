@@ -18,5 +18,5 @@ int main (void)
 
 	escreve_estado(&e);
 
-	return 0;
+	return EXIT_SUCCESS;
 }

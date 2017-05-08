@@ -1,14 +1,15 @@
+#include "check.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "check.h"
 #include "estado.h"
 #include "entidades.h"
 
 bool posicao_ocupada (const estado_p e, posicao_s p)
 {
-	check(e != NULL);
+	assert(e != NULL);
 	return (pos_inimigos(e->inimigo, p,  e->num_inimigos)
 		|| pos_inimigos(e->obstaculo, p,  e->num_obstaculos)
 		|| posicao_igual(e->jog.pos, p));
@@ -18,7 +19,7 @@ posicao_s nova_posicao_unica (const estado_p e)
 {
 	posicao_s ret = { (~0), (~0) };
 
-	check(e != NULL);
+	assert(e != NULL);
 
 	do {
 		ret.x = rand() % TAM;
@@ -31,11 +32,11 @@ posicao_s nova_posicao_unica (const estado_p e)
 char * estado2str (const estado_p e)
 {
 	static char ret[MAX_BUFFER] = "";
-	const char * p = (char *) e;
+	const char * p = (const char *) e;
 	char tmp[(sizeof(char) << 1) + 1] = "";
 	size_t r = 0;
 
-	check(e != NULL);
+	assert(e != NULL);
 
 	ret[0] = '\0';
 
@@ -50,15 +51,15 @@ char * estado2str (const estado_p e)
 estado_s str2estado (char * args)
 {
 	estado_s ret;
-	char * p = (char *) &ret;
-	unsigned int w = 0;
+	uchar * p = (uchar *) &ret;
 	size_t r = 0;
 
-	check(args != NULL);
+	assert(args != NULL);
 
 	for (r = 0; r < sizeof(estado_s); r++) {
-		sscanf(&args[r << 1], "%2x", &w);
-		p[r] = (char) w;
+		unsigned int w = 0;
+		sscanf(&args[r << 1], "%02x", &w);
+		p[r] = (uchar) w;
 	}
 
 	return ret;
@@ -66,15 +67,15 @@ estado_s str2estado (char * args)
 
 bool fim_de_ronda (const estado_p e)
 {
-	check(e != NULL);
+	assert(e != NULL);
 	return e->num_inimigos == 0;
 }
 
 void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 {
-	check(e != NULL);
-	check(p != NULL);
-	check(num != NULL);
+	assert(e != NULL);
+	assert(p != NULL);
+	assert(num != NULL);
 
 	for ((*num) = 0; (*num) < N; (*num)++) {
 		p[(*num)].pos = nova_posicao_unica(e);
@@ -129,32 +130,6 @@ estado_s init_estado (uchar nivel)
 	return ret;
 }
 
-estado_s ler_estado (char * args)
-{
-#if 0
-#define coisas(COND, STR)           \
-	if (COND) {                 \
-		perror(STR);        \
-		exit(EXIT_FAILURE); \
-	}
-	estado_s ret = { 0 };
-
-	if (args == NULL || (strlen(args) == 0)) {
-		ret = init_estado(0);
-	} else {
-		FILE * f = fopen(SHRUG, "r");
-		coisas(f == NULL, "could not open");
-		fread(&ret, sizeof(estado_s), 1, f);
-	}
-
-	return ret;
-#undef coisas
-#endif
-	return (args == NULL || (strlen(args) == 0)) ?
-		init_estado(0) :
-		str2estado(args);
-}
-
 estado_s move_jogador (estado_s e, posicao_s p)
 {
 	e.jog.pos = p;
@@ -167,8 +142,8 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 	estado_s ne;
 	entidade ni;
 
-	check(e != NULL);
-	check(i != NULL);
+	assert(e != NULL);
+	assert(i != NULL);
 
 	ne = *e;
 	ni = i[I];
@@ -183,17 +158,4 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 	}
 
 	return ne;
-}
-
-void escreve_estado (const estado_p e)
-{
-	check(e != NULL);
-
-	FILE * f = fopen(SHRUG, "w");
-
-	check(f != NULL);
-
-	fwrite(e, sizeof(estado_s), 1, f);
-
-	fclose(f);
 }

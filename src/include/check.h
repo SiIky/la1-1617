@@ -1,13 +1,20 @@
 #ifndef _CHECK_H
 #define _CHECK_H
 
+#if 0
+#define NDEBUG
+#endif
 #include <assert.h>
 
-/* enable/disable assert */
-#if 0
-#define check(COND) assert(COND)
-#else
-#define check(COND) ((void)0)
-#endif
+#include <stdlib.h>
+
+#define check(COND, STR)            \
+	if (COND) {                 \
+		perror(STR);        \
+		exit(EXIT_FAILURE); \
+	}
+
+#define ifjmp(COND, LBL)    if (COND) goto LBL
+#define ifnnull(V, F)       if ((V) != NULL) F(V)
 
 #endif /* _CHECK_H */

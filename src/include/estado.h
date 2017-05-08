@@ -6,16 +6,17 @@
 #include "posicao.h"
 #include "entidades.h"
 
-enum mov_type {
-	MOV_TYPE_XADREZ_REI,
-	MOV_TYPE_XADREZ_CAVALO,
-};
-
 #define MIN_INIMIGOS	(TAM)
 #define MIN_OBSTACULOS	(MIN_INIMIGOS << 1)
 
 #define MAX_OBSTACULOS	((TAM * TAM) >> 1)
 #define MAX_INIMIGOS	(MAX_OBSTACULOS >> 1)
+
+enum mov_type {
+	MOV_TYPE_XADREZ_REI,
+	MOV_TYPE_XADREZ_CAVALO,
+	MOV_TYPE_QUANTOS,
+};
 
 typedef struct {
 	uchar nivel;
@@ -30,12 +31,10 @@ typedef struct {
 } estado_s, *estado_p;
 
 #define MAX_BUFFER	((sizeof(estado_s) << 1) + 1)
-#define SHRUG		("/tmp/ficheirola1")
+#define SHRUG		"/var/www/html/ficheirola1"
 
 char * estado2str (const estado_p e);
 estado_s str2estado (char * args);
-estado_s ler_estado (char * args);
-void escreve_estado (const estado_p e);
 
 bool fim_de_ronda (const estado_p e);
 estado_s init_estado (uchar nivel);

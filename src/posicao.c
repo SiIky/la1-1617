@@ -1,12 +1,13 @@
+#include "check.h"
+
 #include <stdio.h>
 
-#include "check.h"
 #include "posicao.h"
 
 char * posicao2str (posicao_p p)
 {
 	static char ret[sizeof(posicao_s) << 1];
-	check(p != NULL);
+	assert(p != NULL);
 
 	sprintf(ret, "%02x", p->x);
 	sprintf(ret+2, "%02x", p->y);
@@ -32,7 +33,7 @@ bool pos_elem (const posicao_p p, size_t num, posicao_s q)
 {
 	bool ret = false;
 	size_t i = 0;
-	check(p != NULL);
+	assert(p != NULL);
 	for (i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
 	return ret;
 }

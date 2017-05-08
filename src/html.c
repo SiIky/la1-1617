@@ -1,6 +1,7 @@
+#include "check.h"
+
 #include <stdlib.h>
 
-#include "check.h"
 #include "posicao.h"
 #include "estado.h"
 #include "jogo.h"
@@ -11,8 +12,8 @@ void imprime_entidades (const entidades p, size_t max, char * img)
 {
 	size_t i = 0;
 
-	check(p != NULL);
-	check(img != NULL);
+	assert(p != NULL);
+	assert(img != NULL);
 
 	for (i = 0; i < max; i++)
 		IMAGE(p[i].pos.x, p[i].pos.y, ESCALA, img);
@@ -20,14 +21,14 @@ void imprime_entidades (const entidades p, size_t max, char * img)
 
 void imprime_inimigos (const estado_p e)
 {
-	check(e != NULL);
+	assert(e != NULL);
 	imprime_entidades(e->inimigo, e->num_inimigos, IMG_INIMIGO);
 }
 
 void imprime_jogada (const jogada_p j)
 {
-	check(j != NULL);
-	check(j->link != NULL);
+	assert(j != NULL);
+	assert(j->link != NULL);
 
 	GAME_LINK(j->link);
 	RECT_TRANSPARENTE(j->dest.y, j->dest.x, ESCALA);
@@ -40,10 +41,10 @@ void imprime_jogadas (const estado_p e)
 	uchar i = 0;
 	jogada_p j = NULL;
 
-	check(e != NULL);
+	assert(e != NULL);
 
 	j = jogadas_possiveis(e);
-	check(j != NULL);
+	assert(j != NULL);
 
 	/* imprimir o jogador */
 	imprime_entidades(&e->jog, 1, IMG_JOGADOR);
@@ -56,7 +57,7 @@ void imprime_jogadas (const estado_p e)
 
 void imprime_obstaculos (const estado_p e)
 {
-	check(e != NULL);
+	assert(e != NULL);
 	imprime_entidades(e->obstaculo, e->num_obstaculos, IMG_OBSTACULO);
 }
 
@@ -92,13 +93,13 @@ void imprime_tabuleiro (abcissa L, ordenada C)
 
 void imprime_porta (const estado_p e)
 {
-	check(e != NULL);
+	assert(e != NULL);
 	IMAGE(e->porta.x, e->porta.y, ESCALA, IMG_PORTA);
 }
 
 void imprime_jogo (const estado_p e)
 {
-	check(e != NULL);
+	assert(e != NULL);
 
 	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
 		COMMENT("tabuleiro");
