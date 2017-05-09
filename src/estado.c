@@ -116,7 +116,7 @@ estado_s init_estado (uchar nivel)
 {
 	estado_s ret = {0};
 
-	ret.nivel = nivel;
+	ret.nivel = nivel + 1;
 	ret.matou = false;
 	ret.mov_type = MOV_TYPE_XADREZ_CAVALO;
 

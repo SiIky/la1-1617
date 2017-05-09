@@ -16,5 +16,6 @@
 
 #define ifjmp(COND, LBL)    if (COND) goto LBL
 #define ifnnull(V, F)       if ((V) != NULL) F(V)
+#define UNUSED(V)           ((void) (V))
 
 #endif /* _CHECK_H */

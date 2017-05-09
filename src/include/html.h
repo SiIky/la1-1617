@@ -50,6 +50,21 @@
 
 #define IMPRIME_CASA(L, C)		RECT((L), (C), ESCALA, random_color())
 
+#define BOTAO_X 440
+#define BOTAO_Y 40
+
+#define TEXT_OFFSET 25
+
+#define BOTAO(X, Y, TXT, COR) \
+	(printf("<RECT Y=%u X=%u WIDTH=100 HEIGHT=40 FILL=\"%s\"/>" \
+		"<TEXT Y=%u X=%u TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\"" \
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">%s</TEXT>", \
+		(Y), \
+		(X), \
+		(COR), \
+		(Y) + (TEXT_OFFSET), \
+		(X) + (TEXT_OFFSET), \
+		(TXT)))
 #include "jogo.h"
 
 void imprime_jogo (const estado_p e);

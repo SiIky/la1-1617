@@ -97,6 +97,30 @@ void imprime_porta (const estado_p e)
 	IMAGE(e->porta.x, e->porta.y, ESCALA, IMG_PORTA);
 }
 
+void imprime_menu (const estado_p e)
+{
+#define botao(TXT, I, LINK) \
+	GAME_LINK(LINK); \
+	BOTAO((BOTAO_X), (I) * (BOTAO_Y), (TXT), random_color()); \
+	FECHA_A
+	assert(e != NULL);
+
+	COMMENT("RESET"); {
+#define reset_link accao2str(accao_new(ACCAO_RESET, posicao_new(0, 0), posicao_new(0,0)))
+		botao("Reset", 1, reset_link);
+#undef reset_link
+	}
+
+	COMMENT("MOVEMENT TYPE"); {
+#define change_mt_link(MT) \
+		accao2str(accao_new(ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
+		enum mov_type mt = mov_type_next(e->mov_type);
+		botao("Movement Type", 2, change_mt_link(mt));
+#undef change_mt_link
+	}
+#undef botao
+}
+
 void imprime_jogo (const estado_p e)
 {
 	assert(e != NULL);
@@ -117,6 +141,9 @@ void imprime_jogo (const estado_p e)
 
 			COMMENT("jogadas");
 			imprime_jogadas(e);
+
+			COMMENT("menu");
+			imprime_menu(e);
 		} FECHA_SVG;
 	} FECHA_BODY;
 }

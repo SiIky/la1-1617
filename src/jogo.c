@@ -18,6 +18,59 @@
  * [ ] Damas
  */
 
+accao_s accao_new (enum accao accao, posicao_s jog, posicao_s dest)
+{
+	assert(accao < ACCAO_INVALID);
+	return (accao_s) {
+		.accao = accao,
+		.jog = jog,
+		.dest = dest,
+	};
+}
+
+char * accao2str (accao_s accao)
+{
+	assert(accao.accao != ACCAO_INVALID);
+
+	static char ret[JOGADA_LINK_MAX_BUFFER] = "";
+	*ret = '\0';
+
+	sprintf(ret,
+		"%08x,"
+		"%02hhx,"
+		"%02hhx,"
+		"%02hhx,"
+		"%02hhx",
+		accao.accao,
+		accao.jog.x,
+		accao.jog.y,
+		accao.dest.x,
+		accao.dest.y
+	       );
+	ret[JOGADA_LINK_MAX_BUFFER - 1] = '\0';
+
+	return ret;
+}
+
+accao_s str2accao (const char * str)
+{
+	assert(str != NULL);
+	accao_s ret = { 0 };
+	sscanf(str,
+	       "%08x,"
+	       "%02hhx,"
+	       "%02hhx,"
+	       "%02hhx,"
+	       "%02hhx",
+	       &ret.accao,
+	       &ret.jog.x,
+	       &ret.jog.y,
+	       &ret.dest.x,
+	       &ret.dest.y
+	      );
+	return ret;
+}
+
 bool jogada_valida (const estado_p e, const posicao_p p)
 {
 	assert(e != NULL);
@@ -34,19 +87,10 @@ uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
 	if (!jogada_valida(&e, &p))
 		return 0;
 
-	sprintf(j->link,
-		"%08x,"
-		"%02hhx,"
-		"%02hhx,"
-		"%02hhx,"
-		"%02hhx",
-		ACCAO_MOVE,
-		e.jog.pos.x,
-		e.jog.pos.y,
-		p.x,
-		p.y);
+	char * link = accao2str(accao_new(ACCAO_MOVE, e.jog.pos, p));
+	assert(link != NULL);
 
-	j->link[JOGADA_LINK_MAX_BUFFER - 1] = '\0';
+	strcpy(j->link, link);
 	j->dest = p;
 
 	return 1;
@@ -152,33 +196,28 @@ jogada_p jogadas_possiveis (const estado_p e)
 #undef N
 }
 
-estado_s accao_reset_handler (estado_s ret, char * args)
+estado_s accao_reset_handler (estado_s e, accao_s accao)
 {
-	ret = init_estado(0);
-	return (args != NULL) ? /* calar "unused variable" warning */
-		ret :
-		ret;
+	UNUSED(e); /* calar "unused parameter" warning */
+	assert(accao.accao == ACCAO_RESET);
+	return init_estado(0);
 }
 
-estado_s accao_move_handler (estado_s ret, char * args)
+estado_s accao_move_handler (estado_s ret, accao_s accao)
 {
-	assert(args != NULL);
+	assert(accao.accao == ACCAO_MOVE);
 
-	ifjmp(*args == '\0', out);
+	ifjmp(!posicao_valida(accao.jog), out);
+	ifjmp(!posicao_valida(accao.dest), out);
 
-	posicao_s p = posicao_new(~0, ~0);
-	sscanf(args, "%02hhx,%02hhx", &p.x, &p.y);
-
-	ifjmp(!posicao_valida(p), out);
-
-	size_t i = pos_inimigos_ind(ret.inimigo, p, ret.num_inimigos);
+	size_t i = pos_inimigos_ind(ret.inimigo, accao.dest, ret.num_inimigos);
 
 	ret = (i < ret.num_inimigos) ? /* se tiver inimigo */
 		ataca(&ret, ret.inimigo, i) :
-		move_jogador(ret, p);
+		move_jogador(ret, accao.dest);
 
 	if (ret.matou)
-		ret = move_jogador(ret, p);
+		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
 		ret = init_estado(ret.nivel);
@@ -187,35 +226,35 @@ out:
 	return ret;
 }
 
-bool link_is_jogada (const estado_p e, char * args)
+enum mov_type mov_type_next (enum mov_type ret)
 {
-	assert(e != NULL);
-	assert(args != NULL);
+	assert(ret < MOV_TYPE_QUANTOS);
+	ret++;
+	return (ret == MOV_TYPE_QUANTOS) ?
+		0 :
+		ret;
+}
 
-	jogada_p jogadas = jogadas_possiveis(e);
-	uchar quantas = quantas_jogadas(jogadas);
-	bool ret = false;
+estado_s accao_change_mt_handler (estado_s ret, accao_s accao)
+{
+	assert(accao.accao == ACCAO_CHANGE_MT);
 
-	for (size_t i = 0; i < quantas && !ret; i++)
-		ret = (strcmp(args, jogadas[i].link) == 0);
+	ifjmp(!posicao_igual(ret.jog.pos, accao.jog), out);
 
+	assert(accao.dest.x < MOV_TYPE_QUANTOS);
+
+	ret.mov_type = accao.dest.x;
+out:
 	return ret;
 }
 
-bool link_is_menu_action (const char * args)
-{
-	assert(args != NULL);
-	enum accao accao = ACCAO_INVALID;
-	sscanf(args, "%08x,", &accao);
-	return accao == ACCAO_RESET;
-}
-
-typedef estado_s (* accao_handler) (estado_s ret, char * args);
+typedef estado_s (* accao_handler) (estado_s ret, accao_s accao);
 const accao_handler * accao_handlers (void)
 {
 	static const accao_handler ret[ACCAO_INVALID] = {
 		[ACCAO_RESET] = accao_reset_handler,
 		[ACCAO_MOVE] = accao_move_handler,
+		[ACCAO_CHANGE_MT] = accao_change_mt_handler,
 	};
 	return ret;
 }
@@ -226,37 +265,14 @@ estado_s corre_accao (estado_s ret, char * args)
 
 	/* se a query string nao for uma jogada nem uma das
 	   accoes do menu */
-	ifjmp(!link_is_jogada(&ret, args)
-	      && !link_is_menu_action(args),
-	      out);
-
-	enum accao accao = ACCAO_INVALID;
-	posicao_s jog = posicao_new(~0, ~0);
-	posicao_s dest = posicao_new(~0, ~0);
 
 	ifjmp(*args == '\0', out);
 
-	sscanf(args,
-	       "%08x,"
-	       "%02hhx,"
-	       "%02hhx,"
-	       "%02hhx,"
-	       "%02hhx",
-	       &accao,
-	       &jog.x,
-	       &jog.y,
-	       &dest.x,
-	       &dest.y);
-
-	ifjmp(accao >= ACCAO_INVALID, out);
-	ifjmp(!posicao_valida(jog), out);
-	ifjmp(!link_is_menu_action(args)
-	      && !posicao_igual(jog, ret.jog.pos),
-	      out);
+	accao_s accao = str2accao(args);
+	ifjmp(accao.accao >= ACCAO_INVALID, out);
 
 	const accao_handler * handlers = accao_handlers();
-	/* 12 da fmt string acima */
-	ret = handlers[accao](ret, args + 12 + 3);
+	ret = handlers[accao.accao](ret, accao);
 out:
 	return ret;
 }
