@@ -101,20 +101,22 @@ void imprime_jogo (const estado_p e)
 {
 	assert(e != NULL);
 
-	ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
-		COMMENT("tabuleiro");
-		imprime_tabuleiro(TAM, TAM);
+	ABRE_BODY(random_color()); {
+		ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
+			COMMENT("tabuleiro");
+			imprime_tabuleiro(TAM, TAM);
 
-		COMMENT("porta");
-		imprime_porta(e);
+			COMMENT("porta");
+			imprime_porta(e);
 
-		COMMENT("obstaculos");
-		imprime_obstaculos(e);
+			COMMENT("obstaculos");
+			imprime_obstaculos(e);
 
-		COMMENT("inimigos");
-		imprime_inimigos(e);
+			COMMENT("inimigos");
+			imprime_inimigos(e);
 
-		COMMENT("jogadas");
-		imprime_jogadas(e);
-	} FECHA_SVG;
+			COMMENT("jogadas");
+			imprime_jogadas(e);
+		} FECHA_SVG;
+	} FECHA_BODY;
 }

@@ -133,6 +133,7 @@ estado_s init_estado (uchar nivel)
 estado_s move_jogador (estado_s e, posicao_s p)
 {
 	e.jog.pos = p;
+	e.jog.vida--;
 	e.matou = false;
 	return e;
 }
@@ -149,6 +150,7 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 	ni = i[I];
 
 	ni.vida--;
+	ne.jog.vida += 2;
 
 	ne.inimigo[I] = ni;
 

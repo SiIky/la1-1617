@@ -15,8 +15,12 @@
 
 #define COMMENT(S)	(puts("\n<!-- " S " -->\n"))
 #define CONTENT_TYPE	(puts("Content-Type: text/html\n\n"))
+
 #define ABRE_SVG(X, Y)	(printf("<SVG WIDTH=%u HEIGHT=%u>\n", (X), (Y)))
 #define FECHA_SVG	(puts("</SVG>\n"))
+
+#define ABRE_BODY(C)	(printf("<BODY STYLE=\"background-color:%s\">\n", (C)))
+#define FECHA_BODY	(puts("</BODY>\n"))
 
 #define GAME_LINK(Q)	(printf("<A XLINK:HREF=\"http://localhost/cgi-bin/rogue?%s\">\n", (Q)))
 #define FECHA_A		(puts("</A>\n"))
@@ -44,7 +48,7 @@
 			(E)\
 			))
 
-#define IMPRIME_CASA(L, C)		RECT(l, c, ESCALA, random_color())
+#define IMPRIME_CASA(L, C)		RECT((L), (C), ESCALA, random_color())
 
 #include "jogo.h"
 

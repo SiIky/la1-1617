@@ -180,6 +180,9 @@ estado_s accao_move_handler (estado_s ret, char * args)
 	if (ret.matou)
 		ret = move_jogador(ret, p);
 
+	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
+		ret = init_estado(ret.nivel);
+
 out:
 	return ret;
 }
