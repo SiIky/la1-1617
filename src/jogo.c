@@ -18,37 +18,43 @@
  * [ ] Damas
  */
 
-accao_s accao_new (enum accao accao, posicao_s jog, posicao_s dest)
+accao_s accao_new (const char * nome, enum accao accao, posicao_s jog, posicao_s dest)
 {
+	assert(nome != NULL);
+	assert(strlen(nome) < JOGADA_LINK_MAX_BUFFER);
 	assert(accao < ACCAO_INVALID);
-	return (accao_s) {
+
+	accao_s ret = (accao_s) {
 		.accao = accao,
 		.jog = jog,
 		.dest = dest,
 	};
+	strcpy(ret.nome, nome);
+
+	return ret;
 }
 
 char * accao2str (accao_s accao)
 {
-	assert(accao.accao != ACCAO_INVALID);
+	assert(accao.nome != NULL);
+	assert(accao.accao < ACCAO_INVALID);
 
 	static char ret[JOGADA_LINK_MAX_BUFFER] = "";
-	*ret = '\0';
-
+	memset(ret, 0, JOGADA_LINK_MAX_BUFFER);
 	sprintf(ret,
+		"%s,"
 		"%08x,"
 		"%02hhx,"
 		"%02hhx,"
 		"%02hhx,"
 		"%02hhx",
+		accao.nome,
 		accao.accao,
 		accao.jog.x,
 		accao.jog.y,
 		accao.dest.x,
 		accao.dest.y
 	       );
-	ret[JOGADA_LINK_MAX_BUFFER - 1] = '\0';
-
 	return ret;
 }
 
@@ -56,18 +62,21 @@ accao_s str2accao (const char * str)
 {
 	assert(str != NULL);
 	accao_s ret = { 0 };
-	sscanf(str,
-	       "%08x,"
-	       "%02hhx,"
-	       "%02hhx,"
-	       "%02hhx,"
-	       "%02hhx",
-	       &ret.accao,
-	       &ret.jog.x,
-	       &ret.jog.y,
-	       &ret.dest.x,
-	       &ret.dest.y
-	      );
+	int r = sscanf(str,
+		       "%[^,],"
+		       "%08x,"
+		       "%02hhx,"
+		       "%02hhx,"
+		       "%02hhx,"
+		       "%02hhx",
+		       ret.nome,
+		       &ret.accao,
+		       &ret.jog.x,
+		       &ret.jog.y,
+		       &ret.dest.x,
+		       &ret.dest.y
+		      );
+	assert(r == 6);
 	return ret;
 }
 
@@ -87,7 +96,7 @@ uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
 	if (!jogada_valida(&e, &p))
 		return 0;
 
-	char * link = accao2str(accao_new(ACCAO_MOVE, e.jog.pos, p));
+	char * link = accao2str(accao_new(e.nome, ACCAO_MOVE, e.jog.pos, p));
 	assert(link != NULL);
 
 	strcpy(j->link, link);
@@ -160,7 +169,7 @@ typedef uchar (* mov_handler) (const estado_p e, jogada_p j);
 const mov_handler * mov_handlers (void)
 {
 	static const mov_handler ret[MOV_TYPE_QUANTOS] = {
-		[MOV_TYPE_XADREZ_REI] = mov_type_xadrez_rei,
+		[MOV_TYPE_XADREZ_REI]    = mov_type_xadrez_rei,
 		[MOV_TYPE_XADREZ_CAVALO] = mov_type_xadrez_cavalo,
 	};
 	return ret;
@@ -169,6 +178,7 @@ const mov_handler * mov_handlers (void)
 jogada_p jogadas_possiveis (const estado_p e)
 {
 	assert(e != NULL);
+	assert(e->nome != NULL);
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 
 	/* numero maximo de jogadas */
@@ -198,13 +208,14 @@ jogada_p jogadas_possiveis (const estado_p e)
 
 estado_s accao_reset_handler (estado_s e, accao_s accao)
 {
-	UNUSED(e); /* calar "unused parameter" warning */
+	assert(e.nome != NULL);
 	assert(accao.accao == ACCAO_RESET);
-	return init_estado(0);
+	return init_estado(0, e.nome);
 }
 
 estado_s accao_move_handler (estado_s ret, accao_s accao)
 {
+	assert(ret.nome != NULL);
 	assert(accao.accao == ACCAO_MOVE);
 
 	ifjmp(!posicao_valida(accao.jog), out);
@@ -220,7 +231,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
-		ret = init_estado(ret.nivel);
+		ret = init_estado(ret.nivel, ret.nome);
 
 out:
 	return ret;
@@ -237,6 +248,7 @@ enum mov_type mov_type_next (enum mov_type ret)
 
 estado_s accao_change_mt_handler (estado_s ret, accao_s accao)
 {
+	assert(ret.nome != NULL);
 	assert(accao.accao == ACCAO_CHANGE_MT);
 
 	ifjmp(!posicao_igual(ret.jog.pos, accao.jog), out);
@@ -248,27 +260,27 @@ out:
 	return ret;
 }
 
+estado_s accao_ignore_handler (estado_s ret, accao_s accao)
+{
+	assert(ret.nome != NULL);
+	assert(accao.accao == ACCAO_IGNORE);
+	return ret;
+}
+
 typedef estado_s (* accao_handler) (estado_s ret, accao_s accao);
 const accao_handler * accao_handlers (void)
 {
 	static const accao_handler ret[ACCAO_INVALID] = {
-		[ACCAO_RESET] = accao_reset_handler,
-		[ACCAO_MOVE] = accao_move_handler,
+		[ACCAO_RESET]     = accao_reset_handler,
+		[ACCAO_MOVE]      = accao_move_handler,
 		[ACCAO_CHANGE_MT] = accao_change_mt_handler,
+		[ACCAO_IGNORE]    = accao_ignore_handler,
 	};
 	return ret;
 }
 
-estado_s corre_accao (estado_s ret, char * args)
+estado_s corre_accao (estado_s ret, accao_s accao)
 {
-	assert(args != NULL);
-
-	/* se a query string nao for uma jogada nem uma das
-	   accoes do menu */
-
-	ifjmp(*args == '\0', out);
-
-	accao_s accao = str2accao(args);
 	ifjmp(accao.accao >= ACCAO_INVALID, out);
 
 	const accao_handler * handlers = accao_handlers();
@@ -277,27 +289,35 @@ out:
 	return ret;
 }
 
-estado_s ler_estado (char * args)
+char * pathname (const char * name)
 {
+	static char ret[11 + 20] = "";
+	sprintf(ret, BASE_PATH "%s", name);
+	return ret;
+}
+
+estado_s ler_estado (accao_s accao)
+{
+	assert(accao.nome != NULL);
+	assert(accao.accao < ACCAO_INVALID);
+
 	estado_s ret = { 0 };
 #if 1
-	FILE * f = fopen(SHRUG, "rb");
+	char * path = pathname(accao.nome);
+	assert(path != NULL);
+
+	FILE * f = fopen(path, "rb");
 	size_t read = 0;
 
-	if (f == NULL)
-		perror("could not open file to read");
-	else if ((read = fread(&ret, sizeof(estado_s), 1, f)) != 1)
-		perror("could not read from file");
+	check(f == NULL, "could not open file to read");
+
+	check((read = fread(&ret, sizeof(estado_s), 1, f)) != 1,
+	      "could not read from file");
 
 	/* nao ha ficheiro ou nao consegue ler */
-	ret = (f == NULL || read != 1) ?
-		init_estado(0) :
-		/* nao ha query string */
-		(args != NULL && *args != '\0') ?
-		corre_accao(ret, args) :
-		ret; /* conseguiu ler */
+	ret = corre_accao(ret, accao);
 
-	ifnnull(f, fclose);
+	fclose(f);
 #else
 	ret = (args == NULL || *args == '\0') ?
 		init_estado(0) :
@@ -309,8 +329,12 @@ estado_s ler_estado (char * args)
 void escreve_estado (const estado_p e)
 {
 	assert(e != NULL);
+	assert(e->nome != NULL);
 
-	FILE * f = fopen(SHRUG, "wb");
+	char * path = pathname(e->nome);
+	assert(path != NULL);
+
+	FILE * f = fopen(path, "wb");
 
 	check(f == NULL, "could not open file to write");
 

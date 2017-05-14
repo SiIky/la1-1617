@@ -31,8 +31,8 @@ uchar entidade_remove (entidades e, size_t i, size_t N)
 	assert(e != NULL);
 	assert(i < N);
 
-	for (N--; i < N; i++)
-		e[i] = e[i+1];
+	N--;
+	e[i] = e[N];
 
 	return N;
 }

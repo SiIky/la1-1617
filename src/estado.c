@@ -29,42 +29,6 @@ posicao_s nova_posicao_unica (const estado_p e)
 	return ret;
 }
 
-char * estado2str (const estado_p e)
-{
-	static char ret[MAX_BUFFER] = "";
-	const char * p = (const char *) e;
-	char tmp[(sizeof(char) << 1) + 1] = "";
-	size_t r = 0;
-
-	assert(e != NULL);
-
-	ret[0] = '\0';
-
-	for (r = 0; r < sizeof(estado_s); r++) {
-		sprintf(tmp, "%02x", p[r]);
-		strcat(&ret[r << 1], tmp);
-	}
-
-	return ret;
-}
-
-estado_s str2estado (char * args)
-{
-	estado_s ret;
-	uchar * p = (uchar *) &ret;
-	size_t r = 0;
-
-	assert(args != NULL);
-
-	for (r = 0; r < sizeof(estado_s); r++) {
-		unsigned int w = 0;
-		sscanf(&args[r << 1], "%02x", &w);
-		p[r] = (uchar) w;
-	}
-
-	return ret;
-}
-
 bool fim_de_ronda (const estado_p e)
 {
 	assert(e != NULL);
@@ -112,9 +76,13 @@ estado_s init_porta (estado_s e)
 	return e;
 }
 
-estado_s init_estado (uchar nivel)
+estado_s init_estado (uchar nivel, const char * nome)
 {
+	assert(nome != NULL);
+
 	estado_s ret = {0};
+
+	strcpy(ret.nome, nome);
 
 	ret.nivel = nivel + 1;
 	ret.matou = false;

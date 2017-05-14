@@ -19,6 +19,7 @@ enum mov_type {
 };
 
 typedef struct {
+	char nome[11];
 	uchar nivel;
 	uchar num_inimigos;
 	uchar num_obstaculos;
@@ -31,13 +32,12 @@ typedef struct {
 } estado_s, *estado_p;
 
 #define MAX_BUFFER	((sizeof(estado_s) << 1) + 1)
-#define SHRUG		"/var/www/html/ficheirola1"
 
 char * estado2str (const estado_p e);
 estado_s str2estado (char * args);
 
 bool fim_de_ronda (const estado_p e);
-estado_s init_estado (uchar nivel);
+estado_s init_estado (uchar nivel, const char * nome);
 estado_s move_jogador (estado_s e, posicao_s p);
 estado_s ataca(const estado_p e, const entidades i, uchar I);
 

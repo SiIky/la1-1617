@@ -2,8 +2,6 @@ CC=gcc
 #CC=musl-gcc
 EXEC=rogue
 
-GAMEFILE=/var/www/html/ficheirola1
-
 FLAGS=-static -Wall -Wextra -Werror -pedantic -Iinclude/
 DFLAGS=$(FLAGS) -g
 CFLAGS=$(FLAGS) -O3
@@ -39,10 +37,9 @@ all: $(DEPS)
 
 install: all $(IMAGENS)
 	sudo mkdir -p /var/www/html/images/
+	sudo mkdir -p -m 0777 /var/www/html/files/
 	sudo cp -f $(IMAGENS) -t /var/www/html/images/
 	sudo cp $(EXEC) -t /usr/lib/cgi-bin
-	sudo touch $(GAMEFILE)
-	sudo chmod 666 $(GAMEFILE)
 
 entrega: $(DEPS) $(IMAGENS)
 	zip -n : -9 entrega.zip $(DEPS) $(IMAGENS)
@@ -52,4 +49,4 @@ doc:
 	doxygen
 
 clean:
-	rm -rf entrega.zip Doxyfile latex html install $(OBJS) $(EXEC)
+	rm -rf entrega.zip Doxyfile latex html $(OBJS) $(EXEC)

@@ -30,9 +30,9 @@ void imprime_jogada (const jogada_p j)
 	assert(j != NULL);
 	assert(j->link != NULL);
 
-	GAME_LINK(j->link);
-	RECT_TRANSPARENTE(j->dest.y, j->dest.x, ESCALA);
-	FECHA_A;
+	GAME_LINK(j->link); {
+		RECT_TRANSPARENTE(j->dest.y, j->dest.x, ESCALA);
+	} FECHA_A;
 }
 
 void imprime_jogadas (const estado_p e)
@@ -106,17 +106,17 @@ void imprime_menu (const estado_p e)
 	assert(e != NULL);
 
 	COMMENT("RESET"); {
-#define reset_link accao2str(accao_new(ACCAO_RESET, posicao_new(0, 0), posicao_new(0,0)))
-		botao("Reset", 1, reset_link);
-#undef reset_link
+#define link accao2str(accao_new(e->nome, ACCAO_RESET, posicao_new(0, 0), posicao_new(0,0)))
+		botao("Reset", 1, link);
+#undef link
 	}
 
 	COMMENT("MOVEMENT TYPE"); {
-#define change_mt_link(MT) \
-		accao2str(accao_new(ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
+#define link(MT) \
+		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 		enum mov_type mt = mov_type_next(e->mov_type);
-		botao("Movement Type", 2, change_mt_link(mt));
-#undef change_mt_link
+		botao("Movement Type", 2, link(mt));
+#undef link
 	}
 #undef botao
 }
