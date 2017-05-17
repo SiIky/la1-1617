@@ -62,20 +62,24 @@ accao_s str2accao (const char * str)
 {
 	assert(str != NULL);
 	accao_s ret = { 0 };
+#ifdef NDEBUG
+	sscanf(str,
+#else
 	int r = sscanf(str,
-		       "%[^,],"
-		       "%08x,"
-		       "%02hhx,"
-		       "%02hhx,"
-		       "%02hhx,"
-		       "%02hhx",
-		       ret.nome,
-		       &ret.accao,
-		       &ret.jog.x,
-		       &ret.jog.y,
-		       &ret.dest.x,
-		       &ret.dest.y
-		      );
+#endif
+	       "%[^,],"
+	       "%08x,"
+	       "%02hhx,"
+	       "%02hhx,"
+	       "%02hhx,"
+	       "%02hhx",
+	       ret.nome,
+	       &ret.accao,
+	       &ret.jog.x,
+	       &ret.jog.y,
+	       &ret.dest.x,
+	       &ret.dest.y
+	      );
 	assert(r == 6);
 	return ret;
 }
@@ -193,14 +197,14 @@ jogada_p jogadas_possiveis (const estado_p e)
 	 * [N] jogada_s
 	 */
 	static uchar arr[SIZE] = "";
-	jogada_p ret = (jogada_p) (arr + 1);
-
-	arr[0] = '\0';
+	memset(arr, 0, SIZE);
 
 	const mov_handler * handlers = mov_handlers();
-	uchar w = handlers[e->mov_type](e, ret);
+	assert(handlers != NULL);
 
-	arr[0] = w;
+	jogada_p ret = (jogada_p) (arr + 1);
+	quantas_jogadas(ret) = handlers[e->mov_type](e, ret);
+
 	return ret;
 #undef SIZE
 #undef N
@@ -208,6 +212,7 @@ jogada_p jogadas_possiveis (const estado_p e)
 
 estado_s accao_reset_handler (estado_s e, accao_s accao)
 {
+	UNUSED(accao);
 	assert(e.nome != NULL);
 	assert(accao.accao == ACCAO_RESET);
 	return init_estado(0, e.nome);
@@ -218,6 +223,13 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 	assert(ret.nome != NULL);
 	assert(accao.accao == ACCAO_MOVE);
 
+	/*
+	 * se a posicao da accao nao for igual a do jogador
+	 * ou a posicao do jogador nao for valida
+	 * ou a posicao de destino nao for valida
+	 * nao faz nada
+	 */
+	ifjmp(!posicao_igual(accao.jog, ret.jog.pos), out);
 	ifjmp(!posicao_valida(accao.jog), out);
 	ifjmp(!posicao_valida(accao.dest), out);
 
@@ -262,6 +274,7 @@ out:
 
 estado_s accao_ignore_handler (estado_s ret, accao_s accao)
 {
+	UNUSED(accao);
 	assert(ret.nome != NULL);
 	assert(accao.accao == ACCAO_IGNORE);
 	return ret;
@@ -302,28 +315,20 @@ estado_s ler_estado (accao_s accao)
 	assert(accao.accao < ACCAO_INVALID);
 
 	estado_s ret = { 0 };
-#if 1
+
 	char * path = pathname(accao.nome);
 	assert(path != NULL);
 
 	FILE * f = fopen(path, "rb");
-	size_t read = 0;
 
 	check(f == NULL, "could not open file to read");
 
-	check((read = fread(&ret, sizeof(estado_s), 1, f)) != 1,
+	check(fread(&ret, sizeof(estado_s), 1, f) != 1,
 	      "could not read from file");
 
-	/* nao ha ficheiro ou nao consegue ler */
-	ret = corre_accao(ret, accao);
-
 	fclose(f);
-#else
-	ret = (args == NULL || *args == '\0') ?
-		init_estado(0) :
-		str2estado(args);
-#endif
-	return ret;
+
+	return corre_accao(ret, accao);
 }
 
 void escreve_estado (const estado_p e)
