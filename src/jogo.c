@@ -252,20 +252,16 @@ out:
 enum mov_type mov_type_next (enum mov_type ret)
 {
 	assert(ret < MOV_TYPE_QUANTOS);
-	ret++;
-	return (ret == MOV_TYPE_QUANTOS) ?
-		0 :
-		ret;
+	return (ret + 1) % MOV_TYPE_QUANTOS;
 }
 
 estado_s accao_change_mt_handler (estado_s ret, accao_s accao)
 {
 	assert(ret.nome != NULL);
 	assert(accao.accao == ACCAO_CHANGE_MT);
+	assert(accao.dest.x < MOV_TYPE_QUANTOS);
 
 	ifjmp(!posicao_igual(ret.jog.pos, accao.jog), out);
-
-	assert(accao.dest.x < MOV_TYPE_QUANTOS);
 
 	ret.mov_type = accao.dest.x;
 out:
