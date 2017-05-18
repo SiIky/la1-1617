@@ -294,7 +294,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
-		ret = init_estado(ret.nivel, ret.score, ret.nome);
+		ret = init_estado(ret.nivel, (ret.score + (ret.jog.vida / 5)), ret.nome);
 
 out:
 	return ret;
@@ -353,6 +353,7 @@ out:
 
 estado_s bot_xadrez_rei (estado_s ret, size_t I)
 {
+	UNUSED(I);
 	assert(ret.nome != NULL);
 	assert(ret.mov_type == MOV_TYPE_XADREZ_REI);
 	assert(I < ret.num_inimigos);
@@ -362,6 +363,7 @@ estado_s bot_xadrez_rei (estado_s ret, size_t I)
 
 estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
 {
+	UNUSED(I);
 	assert(ret.nome != NULL);
 	assert(ret.mov_type == MOV_TYPE_XADREZ_CAVALO);
 	assert(I < ret.num_inimigos);
@@ -488,12 +490,8 @@ struct highscore * ler_highscore (void)
 	check(f == NULL,
 	      "could not open highscore file to read");
 
-	if (fread(ret, sizeof(struct highscore), 3, f) != 3) {
-		memset(ret, 0, 3 * sizeof(struct highscore));
-		fclose(f);
-		f = NULL;
-		escreve_highscore(ret);
-	}
+	memset(ret, 0, 3 * sizeof(struct highscore));
+	fread(ret, sizeof(struct highscore), 3, f);
 
 	ifnnull(f, fclose);
 

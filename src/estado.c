@@ -46,6 +46,7 @@ void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 	assert(e != NULL);
 	assert(p != NULL);
 	assert(num != NULL);
+	assert(vida > 0);
 
 	for ((*num) = 0; (*num) < N; (*num)++) {
 		p[(*num)].pos = nova_posicao_unica(e);
@@ -72,7 +73,7 @@ estado_s init_obstaculos (estado_s e)
 estado_s init_jogador (estado_s e)
 {
 	e.jog.pos = nova_posicao_unica(&e);
-	e.jog.vida = 3 + e.nivel;
+	e.jog.vida = 20 + e.nivel;
 	return e;
 }
 
@@ -129,6 +130,7 @@ estado_s ataca(const estado_p e, const entidades i, uchar I)
 	if (entidade_dead(&ni)) {
 		ne.num_inimigos = entidade_remove(ne.inimigo, I, ne.num_inimigos);
 		ne.matou = true;
+		ne.score++;
 	}
 
 	return ne;

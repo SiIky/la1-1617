@@ -25,10 +25,10 @@ void create_gamefile (const char * fname)
 	ifjmp(file_frw_ok(path), out);
 
 	int fd = open(path, O_CREAT | O_RDWR);
-	check(fd < 0, "could not create file");
+	check(fd < 0, "could not create state file");
 
 	fd = close(fd);
-	check(fd < 0, "could not close file");
+	check(fd < 0, "could not close state file");
 
 	estado_s e = init_estado(0, 0, fname);
 	escreve_estado(&e);
@@ -65,18 +65,21 @@ int main (void)
 	CONTENT_TYPE;
 
 	char * qs = getenv("QUERY_STRING");
-	char * nome = (qs != NULL) ?
-		ler_nome(qs) :
-		NULL;
 
 	if (qs == NULL || *qs == '\0')
 		login();
 	ifjmp(qs == NULL || *qs == '\0', ok);
 
-	if (strncmp("nome=", qs, 5) == 0)
+	bool is_nome = strncmp("nome=", qs, 5) == 0;
+
+	char * nome = (is_nome) ?
+		ler_nome(qs) :
+		NULL;
+
+	if (is_nome)
 		create_gamefile(nome);
 
-	accao_s accao = (strncmp("nome=", qs, 5) == 0) ?
+	accao_s accao = (is_nome) ?
 		accao_new(nome,
 			  ACCAO_IGNORE,
 			  posicao_new(0, 0),
