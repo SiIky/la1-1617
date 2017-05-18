@@ -4,6 +4,7 @@
 #include "posicao.h"
 #include "estado.h"
 
+#define NJOGADAS 8
 #define quantas_jogadas(J) (*(((uchar *) (J)) - 1))
 
 /*
@@ -20,7 +21,6 @@
 	 + 10 + 5 + 1)
 
 #define BASE_PATH	"/var/www/html/files/"
-
 enum accao {
 	ACCAO_RESET,
 	ACCAO_MOVE,

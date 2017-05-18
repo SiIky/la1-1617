@@ -111,7 +111,8 @@ void imprime_menu (const estado_p e)
 #undef link
 	}
 
-	COMMENT("MOVEMENT TYPE"); {
+	if (!fim_de_jogo(e)) {
+		COMMENT("MOVEMENT TYPE");
 #define link(MT) \
 		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 		enum mov_type mt = mov_type_next(e->mov_type);
@@ -121,26 +122,39 @@ void imprime_menu (const estado_p e)
 #undef botao
 }
 
+void game_over (void)
+{
+	printf(
+		"<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">Game Over!</TEXT>"
+	      );
+}
+
 void imprime_jogo (const estado_p e)
 {
 	assert(e != NULL);
 
 	ABRE_BODY(random_color()); {
 		ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
-			COMMENT("tabuleiro");
-			imprime_tabuleiro(TAM, TAM);
+			if (fim_de_jogo(e)) {
+				COMMENT("GAME OVER");
+				game_over();
+			} else {
+				COMMENT("tabuleiro");
+				imprime_tabuleiro(TAM, TAM);
 
-			COMMENT("porta");
-			imprime_porta(e);
+				COMMENT("porta");
+				imprime_porta(e);
 
-			COMMENT("obstaculos");
-			imprime_obstaculos(e);
+				COMMENT("obstaculos");
+				imprime_obstaculos(e);
 
-			COMMENT("inimigos");
-			imprime_inimigos(e);
+				COMMENT("inimigos");
+				imprime_inimigos(e);
 
-			COMMENT("jogadas");
-			imprime_jogadas(e);
+				COMMENT("jogadas");
+				imprime_jogadas(e);
+			}
 
 			COMMENT("menu");
 			imprime_menu(e);

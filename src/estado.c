@@ -29,6 +29,12 @@ posicao_s nova_posicao_unica (const estado_p e)
 	return ret;
 }
 
+bool fim_de_jogo (const estado_p e)
+{
+	assert(e != NULL);
+	return e->jog.vida == 0;
+}
+
 bool fim_de_ronda (const estado_p e)
 {
 	assert(e != NULL);
@@ -76,7 +82,7 @@ estado_s init_porta (estado_s e)
 	return e;
 }
 
-estado_s init_estado (uchar nivel, const char * nome)
+estado_s init_estado (uchar nivel, uchar score, const char * nome)
 {
 	assert(nome != NULL);
 
@@ -85,15 +91,14 @@ estado_s init_estado (uchar nivel, const char * nome)
 	strcpy(ret.nome, nome);
 
 	ret.nivel = nivel + 1;
+	ret.score = score;
 	ret.matou = false;
 	ret.mov_type = MOV_TYPE_XADREZ_CAVALO;
 
 	ret = init_jogador(ret);
-
+	ret = init_porta(ret);
 	ret = init_obstaculos(ret);
 	ret = init_inimigos(ret);
-
-	ret = init_porta(ret);
 
 	return ret;
 }
@@ -101,21 +106,20 @@ estado_s init_estado (uchar nivel, const char * nome)
 estado_s move_jogador (estado_s e, posicao_s p)
 {
 	e.jog.pos = p;
-	e.jog.vida--;
 	e.matou = false;
+	/* nao perde vida no fim de uma ronda */
+	if (!fim_de_ronda(&e))
+		e.jog.vida--;
 	return e;
 }
 
 estado_s ataca(const estado_p e, const entidades i, uchar I)
 {
-	estado_s ne;
-	entidade ni;
-
 	assert(e != NULL);
 	assert(i != NULL);
 
-	ne = *e;
-	ni = i[I];
+	estado_s ne = *e;
+	entidade ni = i[I];
 
 	ni.vida--;
 	ne.jog.vida += 2;

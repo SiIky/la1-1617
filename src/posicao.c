@@ -4,17 +4,6 @@
 
 #include "posicao.h"
 
-char * posicao2str (posicao_p p)
-{
-	static char ret[sizeof(posicao_s) << 1];
-	assert(p != NULL);
-
-	sprintf(ret, "%02x", p->x);
-	sprintf(ret+2, "%02x", p->y);
-
-	return ret;
-}
-
 bool posicao_valida (posicao_s p)
 {
 	/*

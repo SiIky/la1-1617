@@ -23,6 +23,7 @@ typedef struct {
 	uchar nivel;
 	uchar num_inimigos;
 	uchar num_obstaculos;
+	uchar score;
 	bool matou;
 	enum mov_type mov_type;
 	entidade jog;
@@ -36,8 +37,9 @@ typedef struct {
 char * estado2str (const estado_p e);
 estado_s str2estado (char * args);
 
+bool fim_de_jogo (const estado_p e);
 bool fim_de_ronda (const estado_p e);
-estado_s init_estado (uchar nivel, const char * nome);
+estado_s init_estado (uchar nivel, uchar score, const char * nome);
 estado_s move_jogador (estado_s e, posicao_s p);
 estado_s ataca(const estado_p e, const entidades i, uchar I);
 

@@ -12,15 +12,17 @@
 #include "estado.h"
 #include "html.h"
 
-void create_file (const char * fname)
+#define file_frw_ok(FNAME) (access(FNAME, F_OK | R_OK | W_OK) == 0)
+
+void create_gamefile (const char * fname)
 {
 	assert(fname != NULL);
 
 	char * path = pathname(fname);
 	assert(path != NULL);
 
-	/* if file exists, GTFO */
-	ifjmp(access(path, F_OK) == 0, out);
+	/* if file exists and we can RW, GTFO */
+	ifjmp(file_frw_ok(path), out);
 
 	int fd = open(path, O_CREAT | O_RDWR);
 	check(fd < 0, "could not create file");
@@ -28,7 +30,7 @@ void create_file (const char * fname)
 	fd = close(fd);
 	check(fd < 0, "could not close file");
 
-	estado_s e = init_estado(0, fname);
+	estado_s e = init_estado(0, 0, fname);
 	escreve_estado(&e);
 
 out:
@@ -72,7 +74,7 @@ int main (void)
 	ifjmp(qs == NULL || *qs == '\0', ok);
 
 	if (strncmp("nome=", qs, 5) == 0)
-		create_file(nome);
+		create_gamefile(nome);
 
 	accao_s accao = (strncmp("nome=", qs, 5) == 0) ?
 		accao_new(nome,

@@ -1,3 +1,4 @@
+HIGHSCOREFILE=/var/www/html/highscoresfile
 CC=gcc
 #CC=musl-gcc
 EXEC=rogue
@@ -38,6 +39,8 @@ all: $(DEPS)
 install: all $(IMAGENS)
 	sudo mkdir -p /var/www/html/images/
 	sudo mkdir -p -m 0777 /var/www/html/files/
+	sudo touch $(HIGHSCOREFILE)
+	sudo chmod 0666 $(HIGHSCOREFILE)
 	sudo cp -f $(IMAGENS) -t /var/www/html/images/
 	sudo cp $(EXEC) -t /usr/lib/cgi-bin
 

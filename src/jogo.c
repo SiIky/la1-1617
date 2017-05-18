@@ -18,6 +18,60 @@
  * [ ] Damas
  */
 
+uchar pospos_aux (const estado_p e, posicao_p dst, const posicao_p o)
+{
+	UNUSED(e);
+	UNUSED(dst);
+	UNUSED(o);
+	return 0;
+}
+
+uchar pospos_xadrez_rei (const estado_p e, posicao_p dst, const posicao_p o)
+{
+	UNUSED(e);
+	UNUSED(dst);
+	UNUSED(o);
+	return 0;
+}
+
+uchar pospos_xadrez_cavalo (const estado_p e, posicao_p dst, const posicao_p o)
+{
+	UNUSED(e);
+	UNUSED(dst);
+	UNUSED(o);
+	return 0;
+}
+
+typedef uchar (* pospos_handler) (const estado_p e, posicao_p dst, const posicao_p o);
+const pospos_handler * pospos_handlers (void)
+{
+	static const pospos_handler ret[MOV_TYPE_QUANTOS] = {
+		[MOV_TYPE_XADREZ_REI]    = pospos_xadrez_rei,
+		[MOV_TYPE_XADREZ_CAVALO] = pospos_xadrez_cavalo,
+	};
+	return ret;
+}
+
+posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
+{
+	assert(e != NULL);
+	assert(e->mov_type < MOV_TYPE_QUANTOS);
+	assert(posicao_valida(o));
+
+#define SIZE (1 + (sizeof(posicao_s) * NJOGADAS))
+	static uchar arr[SIZE] = "";
+	memset(arr, 0, SIZE);
+
+	const pospos_handler * handlers = pospos_handlers();
+	assert(handlers != NULL);
+
+	posicao_p ret = (posicao_p) (arr + 1);
+	quantas_jogadas(ret) = handlers[e->mov_type](e, ret, &o);
+
+	return ret;
+#undef SIZE
+}
+
 accao_s accao_new (const char * nome, enum accao accao, posicao_s jog, posicao_s dest)
 {
 	assert(nome != NULL);
@@ -185,10 +239,8 @@ jogada_p jogadas_possiveis (const estado_p e)
 	assert(e->nome != NULL);
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 
-	/* numero maximo de jogadas */
-#define N    8
 	/* tamanho do array em bytes */
-#define SIZE (1 + (sizeof(jogada_s) * N))
+#define SIZE (1 + (sizeof(jogada_s) * NJOGADAS))
 
 	/*
 	 * [0] uchar => quantas jogadas possiveis existem
@@ -207,7 +259,6 @@ jogada_p jogadas_possiveis (const estado_p e)
 
 	return ret;
 #undef SIZE
-#undef N
 }
 
 estado_s accao_reset_handler (estado_s e, accao_s accao)
@@ -215,7 +266,7 @@ estado_s accao_reset_handler (estado_s e, accao_s accao)
 	UNUSED(accao);
 	assert(e.nome != NULL);
 	assert(accao.accao == ACCAO_RESET);
-	return init_estado(0, e.nome);
+	return init_estado(0, 0, e.nome);
 }
 
 estado_s accao_move_handler (estado_s ret, accao_s accao)
@@ -243,7 +294,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
-		ret = init_estado(ret.nivel, ret.nome);
+		ret = init_estado(ret.nivel, ret.score, ret.nome);
 
 out:
 	return ret;
@@ -264,6 +315,8 @@ estado_s accao_change_mt_handler (estado_s ret, accao_s accao)
 	ifjmp(!posicao_igual(ret.jog.pos, accao.jog), out);
 
 	ret.mov_type = accao.dest.x;
+	if (!fim_de_ronda(&ret))
+		ret.jog.vida--;
 out:
 	return ret;
 }
@@ -298,6 +351,55 @@ out:
 	return ret;
 }
 
+estado_s bot_xadrez_rei (estado_s ret, size_t I)
+{
+	assert(ret.nome != NULL);
+	assert(ret.mov_type == MOV_TYPE_XADREZ_REI);
+	assert(I < ret.num_inimigos);
+
+	return ret;
+}
+
+estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
+{
+	assert(ret.nome != NULL);
+	assert(ret.mov_type == MOV_TYPE_XADREZ_CAVALO);
+	assert(I < ret.num_inimigos);
+
+	return ret;
+}
+
+typedef estado_s (* bot_handler) (estado_s ret, size_t I);
+const bot_handler * bot_handlers (void)
+{
+	static const bot_handler ret[MOV_TYPE_QUANTOS] = {
+		[MOV_TYPE_XADREZ_REI]    = bot_xadrez_rei,
+		[MOV_TYPE_XADREZ_CAVALO] = bot_xadrez_cavalo,
+	};
+	return ret;
+}
+
+estado_s bot_joga_aux (estado_s ret, size_t I)
+{
+	assert(ret.nome != NULL);
+	assert(ret.mov_type < MOV_TYPE_QUANTOS);
+	assert(I < ret.num_inimigos);
+
+	const bot_handler * handlers = bot_handlers();
+	assert(handlers != NULL);
+	return handlers[ret.mov_type](ret, I);
+}
+
+estado_s bot_joga (estado_s ret)
+{
+	assert(ret.nome != NULL);
+
+	for (size_t i = 0; i < ret.num_inimigos; i++)
+		ret = bot_joga_aux(ret, i);
+
+	return ret;
+}
+
 char * pathname (const char * name)
 {
 	static char ret[11 + 20] = "";
@@ -317,14 +419,17 @@ estado_s ler_estado (accao_s accao)
 
 	FILE * f = fopen(path, "rb");
 
-	check(f == NULL, "could not open file to read");
+	check(f == NULL, "could not open state file to read");
 
 	check(fread(&ret, sizeof(estado_s), 1, f) != 1,
-	      "could not read from file");
+	      "could not read from state file");
 
 	fclose(f);
 
-	return corre_accao(ret, accao);
+	ret = corre_accao(ret, accao);
+	ret = bot_joga(ret);
+
+	return ret;
 }
 
 void escreve_estado (const estado_p e)
@@ -337,10 +442,10 @@ void escreve_estado (const estado_p e)
 
 	FILE * f = fopen(path, "wb");
 
-	check(f == NULL, "could not open file to write");
+	check(f == NULL, "could not open state file to write");
 
 	check(fwrite(e, sizeof(estado_s), 1, f) != 1,
-	      "could not write to file");
+	      "could not write to state file");
 
 	fclose(f);
 }
