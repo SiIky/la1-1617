@@ -41,6 +41,12 @@ typedef struct {
 	char link[JOGADA_LINK_MAX_BUFFER];
 } jogada_s, *jogada_p;
 
+#define SCOREFILE_PATH	"/var/www/html/highscoresfile"
+struct highscore {
+	char nome[11];
+	uchar score;
+};
+
 jogada_p jogadas_possiveis (const estado_p e);
 estado_s ler_estado (accao_s accao);
 void escreve_estado (const estado_p e);
@@ -50,5 +56,9 @@ accao_s accao_new (const char * nome, enum accao accao, posicao_s jog, posicao_s
 char * accao2str (accao_s accao);
 accao_s str2accao (const char * str);
 enum mov_type mov_type_next (enum mov_type ret);
+
+struct highscore * ler_highscore (void);
+void escreve_highscore (struct highscore hs[3]);
+void update_highscore (const estado_p e, struct highscore hs[3]);
 
 #endif /* _JOGO_H */

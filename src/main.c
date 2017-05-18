@@ -84,8 +84,15 @@ int main (void)
 		str2accao(qs);
 
 	estado_s e = ler_estado(accao);
-	imprime_jogo(&e);
 	escreve_estado(&e);
+
+	if (fim_de_jogo(&e)) {
+		struct highscore * hs = ler_highscore();
+		update_highscore(&e, hs);
+		escreve_highscore(hs);
+	}
+
+	imprime_jogo(&e);
 
 ok:
 	return EXIT_SUCCESS;

@@ -449,3 +449,53 @@ void escreve_estado (const estado_p e)
 
 	fclose(f);
 }
+
+void update_highscore (const estado_p e, struct highscore hs[3])
+{
+	assert(e != NULL);
+	assert(e->nome != NULL);
+	assert(fim_de_jogo(e));
+	assert(hs != NULL);
+
+	size_t i = 0;
+	for (i = 0; i < 3 && e->score < hs[i].score; i++);
+
+	if (i < 3) {
+		hs[i].score = e->score;
+		strcpy(hs[i].nome, e->nome);
+	}
+}
+
+void escreve_highscore (struct highscore hs[3])
+{
+	assert(hs != NULL);
+	FILE * f = fopen(SCOREFILE_PATH, "wb");
+
+	check(f == NULL,
+	      "could not open highscore file to write");
+
+	check(fwrite(hs, sizeof(struct highscore), 3, f) != 3,
+	      "could not write to highscore file");
+
+	fclose(f);
+}
+
+struct highscore * ler_highscore (void)
+{
+	static struct highscore ret[3] = {0};
+	FILE * f = fopen(SCOREFILE_PATH, "rb");
+
+	check(f == NULL,
+	      "could not open highscore file to read");
+
+	if (fread(ret, sizeof(struct highscore), 3, f) != 3) {
+		memset(ret, 0, 3 * sizeof(struct highscore));
+		fclose(f);
+		f = NULL;
+		escreve_highscore(ret);
+	}
+
+	ifnnull(f, fclose);
+
+	return ret;
+}
