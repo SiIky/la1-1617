@@ -20,10 +20,11 @@ bool posicao_igual (posicao_s p1, posicao_s p2)
 
 bool pos_elem (const posicao_p p, size_t num, posicao_s q)
 {
-	bool ret = false;
-	size_t i = 0;
 	assert(p != NULL);
-	for (i = 0; i < num && !(ret = posicao_igual(p[i], q)); i++);
+	bool ret = false;
+	for (size_t i = 0;
+	     i < num && !(ret = posicao_igual(p[i], q));
+	     i++);
 	return ret;
 }
 

@@ -18,31 +18,48 @@
  * [ ] Damas
  */
 
-uchar pospos_aux (const estado_p e, posicao_p dst, const posicao_p o)
+uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 {
-	UNUSED(e);
-	UNUSED(dst);
-	UNUSED(o);
-	return 0;
+	assert(dst != NULL);
+	assert(o != NULL);
+
+	uchar ret = 0;
+	for (abcissa x = o->x; x < o->x + 3; x++)
+		for (ordenada y = o->y; y < o->y + 3; y++)
+			dst[ret++] = posicao_new(x - 1, y - 1);
+
+	return ret;
 }
 
-uchar pospos_xadrez_rei (const estado_p e, posicao_p dst, const posicao_p o)
+uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 {
-	UNUSED(e);
-	UNUSED(dst);
-	UNUSED(o);
-	return 0;
+	assert(dst != NULL);
+	assert(o != NULL);
+
+	uchar ret = 0;
+
+#define F(X, Y) \
+	{                                              \
+		posicao_s tmp = posicao_new((X), (Y)); \
+		if (posicao_valida(tmp)) {             \
+			dst[ret] = tmp;                \
+			ret++;                         \
+		}                                      \
+	}
+	F(o->x - 2, o->y - 1);
+	F(o->x - 2, o->y + 1);
+	F(o->x - 1, o->y - 2);
+	F(o->x - 1, o->y + 2);
+	F(o->x + 1, o->y - 2);
+	F(o->x + 1, o->y + 2);
+	F(o->x + 2, o->y - 1);
+	F(o->x + 2, o->y + 1);
+#undef F
+
+	return ret;
 }
 
-uchar pospos_xadrez_cavalo (const estado_p e, posicao_p dst, const posicao_p o)
-{
-	UNUSED(e);
-	UNUSED(dst);
-	UNUSED(o);
-	return 0;
-}
-
-typedef uchar (* pospos_handler) (const estado_p e, posicao_p dst, const posicao_p o);
+typedef uchar (* pospos_handler) (posicao_p dst, const posicao_p o);
 const pospos_handler * pospos_handlers (void)
 {
 	static const pospos_handler ret[MOV_TYPE_QUANTOS] = {
@@ -66,7 +83,7 @@ posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 	assert(handlers != NULL);
 
 	posicao_p ret = (posicao_p) (arr + 1);
-	quantas_jogadas(ret) = handlers[e->mov_type](e, ret, &o);
+	quantas_jogadas(ret) = handlers[e->mov_type](ret, &o);
 
 	return ret;
 #undef SIZE
