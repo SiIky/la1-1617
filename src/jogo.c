@@ -38,14 +38,7 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 
 	uchar ret = 0;
 
-#define F(X, Y) \
-	{                                              \
-		posicao_s tmp = posicao_new((X), (Y)); \
-		if (posicao_valida(tmp)) {             \
-			dst[ret] = tmp;                \
-			ret++;                         \
-		}                                      \
-	}
+#define F(X, Y) dst[ret++] = posicao_new((X), (Y))
 	F(o->x - 2, o->y - 1);
 	F(o->x - 2, o->y + 1);
 	F(o->x - 1, o->y - 2);
