@@ -52,6 +52,18 @@ size_t pos_sq_dist (posicao_s p1, posicao_s p2)
 #undef min
 }
 
+size_t pos_mais_perto (const posicao_p ps, size_t N, posicao_s p)
+{
+	assert(ps != NULL);
+	size_t ret = 0;
+	size_t d = pos_sq_dist(ps[0], p);
+	for (size_t i = 1; i < N; i++)
+		ret = (d > pos_sq_dist(ps[i], p)) ?
+			i :
+			ret;
+	return ret;
+}
+
 posicao_s posicao_new (abcissa x, ordenada y)
 {
 	return (posicao_s) {
