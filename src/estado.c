@@ -17,9 +17,8 @@ bool posicao_ocupada (const estado_p e, posicao_s p)
 
 posicao_s nova_posicao_unica (const estado_p e)
 {
-	posicao_s ret = { (~0), (~0) };
-
 	assert(e != NULL);
+	posicao_s ret = { (~0), (~0) };
 
 	do {
 		ret.x = rand() % TAM;
@@ -99,8 +98,8 @@ estado_s init_estado (uchar nivel, uchar score, enum mov_type mt, const char * n
 		mt;
 
 	ret = init_jogador(ret);
-	ret = init_porta(ret);
 	ret = init_obstaculos(ret);
+	ret = init_porta(ret);
 	ret = init_inimigos(ret);
 
 	return ret;

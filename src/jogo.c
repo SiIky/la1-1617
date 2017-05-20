@@ -327,7 +327,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		move_jogador(ret, accao.dest);
 
 	if (ret.matou)
-		ret = move_jogador(ret, accao.dest);
+		ret.jog.pos = accao.dest;
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
 		ret = init_estado(ret.nivel, (ret.score + (ret.jog.vida / 5)), ret.mov_type, ret.nome);

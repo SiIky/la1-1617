@@ -1,16 +1,13 @@
 #include "check.h"
 
-#include <stdio.h>
-#include <string.h>
-
 #include "posicao.h"
 
 #include "entidades.h"
 
 size_t pos_inimigos_ind (const entidades e, posicao_s p, size_t num_inimigos)
 {
-	size_t i = 0;
 	assert(e != NULL);
+	size_t i = 0;
 	for (i = 0; i < num_inimigos && !(posicao_igual(e[i].pos, p)); i++);
 	return i;
 }
