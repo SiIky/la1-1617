@@ -32,9 +32,13 @@ uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 	assert(o != NULL);
 
 	uchar ret = 0;
-	for (abcissa x = o->x; x < o->x + 3; x++)
-		for (ordenada y = o->y; y < o->y + 3; y++)
-			dst[ret++] = posicao_new(x - 1, y - 1);
+	for (abcissa x = o->x; x < o->x + 3; x++) {
+		for (ordenada y = o->y; y < o->y + 3; y++) {
+			posicao_s p = posicao_new(x - 1, y - 1);
+			if (!posicao_igual(*o, p))
+				dst[ret++] = p;
+		}
+	}
 
 	return ret;
 }
@@ -298,7 +302,7 @@ estado_s accao_reset_handler (estado_s e, accao_s accao)
 	UNUSED(accao);
 	assert(e.nome != NULL);
 	assert(accao.accao == ACCAO_RESET);
-	return init_estado(0, 0, e.nome);
+	return init_estado(0, 0, MOV_TYPE_QUANTOS, e.nome);
 }
 
 estado_s accao_move_handler (estado_s ret, accao_s accao)
@@ -326,7 +330,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
-		ret = init_estado(ret.nivel, (ret.score + (ret.jog.vida / 5)), ret.nome);
+		ret = init_estado(ret.nivel, (ret.score + (ret.jog.vida / 5)), ret.mov_type, ret.nome);
 
 out:
 	return ret;

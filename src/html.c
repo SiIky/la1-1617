@@ -126,7 +126,9 @@ void game_over (void)
 {
 	printf(
 		"<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
-		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">Game Over!</TEXT>"
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
+		"Game Over! Login as a new user or restart!"
+		"</TEXT>"
 	      );
 }
 

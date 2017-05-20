@@ -30,7 +30,7 @@ void create_gamefile (const char * fname)
 	fd = close(fd);
 	check(fd < 0, "could not close state file");
 
-	estado_s e = init_estado(0, 0, fname);
+	estado_s e = init_estado(0, 0, MOV_TYPE_QUANTOS, fname);
 	escreve_estado(&e);
 
 out:
@@ -93,6 +93,7 @@ int main (void)
 		struct highscore * hs = ler_highscore();
 		update_highscore(&e, hs);
 		escreve_highscore(hs);
+		login();
 	}
 
 	imprime_jogo(&e);
