@@ -394,6 +394,15 @@ estado_s bot_xadrez_rei (estado_s ret, size_t I)
 	assert(ret.mov_type == MOV_TYPE_XADREZ_REI);
 	assert(I < ret.num_inimigos);
 
+	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
+	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
+	posicao_s posicao = posicoes[i];
+	if(posicao_igual(posicao,ret.jog.pos)){
+		ataca_jogador (ret, I);
+	}
+	else
+		ret.inimigo[i].pos = posicao;
+
 	return ret;
 }
 
@@ -403,6 +412,15 @@ estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
 	assert(ret.nome != NULL);
 	assert(ret.mov_type == MOV_TYPE_XADREZ_CAVALO);
 	assert(I < ret.num_inimigos);
+
+	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
+	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
+	posicao_s posicao = posicoes[i];
+	if(posicao_igual(posicao,ret.jog.pos)){
+		ataca_jogador (ret, I);
+	}
+	else
+		ret.inimigo[i].pos = posicao;
 
 	return ret;
 }
