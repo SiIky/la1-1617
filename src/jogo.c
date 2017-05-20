@@ -18,6 +18,14 @@
  * [ ] Damas
  */
 
+bool jogada_valida (const estado_p e, const posicao_p p)
+{
+	assert(e != NULL);
+	assert(p != NULL);
+	return posicao_valida(*p)
+	    && !(pos_inimigos(e->obstaculo, *p, e->num_obstaculos));
+}
+
 uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 {
 	assert(dst != NULL);
@@ -62,6 +70,21 @@ const pospos_handler * pospos_handlers (void)
 	return ret;
 }
 
+uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (const estado_p, const posicao_p))
+{
+	assert(p != NULL);
+	assert(num > 0);
+	assert(f != NULL);
+
+	uchar ret = 0;
+
+	for (size_t r = 0; r < num; r++)
+		if (f(e, p + r))
+			p[ret++] = p[r];
+
+	return ret;
+}
+
 posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 {
 	assert(e != NULL);
@@ -76,7 +99,15 @@ posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 	assert(handlers != NULL);
 
 	posicao_p ret = (posicao_p) (arr + 1);
+
+	/* calcula as posicoes possiveis pra certo mov_type */
 	quantas_jogadas(ret) = handlers[e->mov_type](ret, &o);
+
+	/* filtra as posicoes validas (i.e., dentro do mapa) */
+	quantas_jogadas(ret) = pos_filter(ret, quantas_jogadas(ret), posicao_valida);
+
+	/* filtra as posicoes que podem ser jogadas */
+	quantas_jogadas(ret) = pospos_filter(e, ret, quantas_jogadas(ret), jogada_valida);
 
 	return ret;
 #undef SIZE
@@ -146,15 +177,6 @@ accao_s str2accao (const char * str)
 	      );
 	assert(r == 6);
 	return ret;
-}
-
-bool jogada_valida (const estado_p e, const posicao_p p)
-{
-	assert(e != NULL);
-	assert(p != NULL);
-	return posicao_valida(*p)
-	    && !(pos_inimigos(e->obstaculo, *p, e->num_obstaculos))
-	    && !(posicao_igual(e->jog.pos, *p));
 }
 
 uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)

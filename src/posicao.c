@@ -28,10 +28,25 @@ bool pos_elem (const posicao_p p, size_t num, posicao_s q)
 	return ret;
 }
 
+size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
+{
+	assert(p != NULL);
+	assert(num > 0);
+	assert(f != NULL);
+
+	size_t w = 0;
+
+	for (size_t r = 0; r < num; r++)
+		if (f(p[r]))
+			p[w++] = p[r];
+
+	return w;
+}
+
 posicao_s posicao_new (abcissa x, ordenada y)
 {
-	posicao_s r;
-	r.x = x;
-	r.y = y;
-	return r;
+	return (posicao_s) {
+		.x = x,
+		.y = y,
+	};
 }
