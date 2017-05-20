@@ -43,5 +43,6 @@ estado_s init_estado (uchar nivel, uchar score, enum mov_type mt, const char * n
 estado_s move_jogador (estado_s e, posicao_s p);
 estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I);
 estado_s ataca_jogador (const estado_p e, uchar I);
+bool nao_tem_inimigos (const estado_p e, const posicao_p p);
 
 #endif /* _ESTADO_H */

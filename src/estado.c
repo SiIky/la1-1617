@@ -115,6 +115,13 @@ estado_s move_jogador (estado_s e, posicao_s p)
 	return e;
 }
 
+bool nao_tem_inimigos (const estado_p e, const posicao_p p)
+{
+	assert(e != NULL);
+	assert(p != NULL);
+	return !pos_inimigos(e->inimigo, *p, e->num_inimigos);
+}
+
 estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I)
 {
 	assert(e != NULL);
@@ -148,8 +155,7 @@ estado_s ataca_jogador (const estado_p e, uchar I)
 	assert(ne.jog.vida > 0);
 
 	ne.jog.vida--;
-	ne.inimigo[I].vida += 1;
-
+	ne.inimigo[I].vida++;
 
 	return ne;
 }

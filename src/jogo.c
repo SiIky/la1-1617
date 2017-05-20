@@ -53,6 +53,18 @@ uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 
 uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 {
+	/*
+	 *    2 1 0 1 2
+	 * 2 | |X| |X| |
+	 *   -----------
+	 * 1 |X| | | |X|
+	 *   -----------
+	 * 0 | | |J| | |
+	 *   -----------
+	 * 1 |X| | | |X|
+	 *   -----------
+	 * 2 | |X| |X| |
+	 */
 	assert(dst != NULL);
 	assert(o != NULL);
 
@@ -316,61 +328,25 @@ out:
 	return ret;
 }
 
-estado_s bot_xadrez_rei (estado_s ret, size_t I)
+estado_s bot_joga_aux (estado_s ret, size_t I)
 {
-	UNUSED(I);
-	assert(ret.nome != NULL);
-	assert(ret.mov_type == MOV_TYPE_XADREZ_REI);
-	assert(I < ret.num_inimigos);
+	posicao_p posicoes = posicoes_possiveis(&ret, ret.inimigo[I].pos);
+	assert(posicoes != NULL);
 
-	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
-	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
-	posicao_s posicao = posicoes[i];
-	if (posicao_igual(posicao,ret.jog.pos))
-		ataca_jogador(&ret, I);
+	quantas_jogadas(posicoes) = pospos_filter(&ret, posicoes, quantas_jogadas(posicoes), nao_tem_inimigos);
+
+	size_t mp = pos_mais_perto(posicoes, quantas_jogadas(posicoes), ret.jog.pos);
+
+	ifjmp(mp >= quantas_jogadas(posicoes), out);
+
+	posicao_s p = posicoes[mp];
+
+	if (posicao_igual(ret.jog.pos, p))
+		ret = ataca_jogador(&ret, I);
 	else
-		ret.inimigo[i].pos = posicao;
+		ret.inimigo[I].pos = p;
 
-	return ret;
-}
-
-estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
-{
-	UNUSED(I);
-	assert(ret.nome != NULL);
-	assert(ret.mov_type == MOV_TYPE_XADREZ_CAVALO);
-	assert(I < ret.num_inimigos);
-
-	/*
-	 *    2 1 0 1 2
-	 * 2 | |X| |X| |
-	 *   -----------
-	 * 1 |X| | | |X|
-	 *   -----------
-	 * 0 | | |J| | |
-	 *   -----------
-	 * 1 |X| | | |X|
-	 *   -----------
-	 * 2 | |X| |X| |
-	 */
-	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
-	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
-	posicao_s posicao = posicoes[i];
-	if (posicao_igual(posicao,ret.jog.pos))
-		ataca_jogador(&ret, I);
-	else
-		ret.inimigo[i].pos = posicao;
-
-	return ret;
-}
-
-typedef estado_s (* bot_handler) (estado_s ret, size_t I);
-const bot_handler * bot_handlers (void)
-{
-	static const bot_handler ret[MOV_TYPE_QUANTOS] = {
-		[MOV_TYPE_XADREZ_REI]    = bot_xadrez_rei,
-		[MOV_TYPE_XADREZ_CAVALO] = bot_xadrez_cavalo,
-	};
+out:
 	return ret;
 }
 
@@ -378,10 +354,8 @@ estado_s bot_joga (estado_s ret)
 {
 	assert(ret.nome != NULL);
 
-	const bot_handler * handlers = bot_handlers();
-	assert(handlers != NULL);
 	for (size_t i = 0; i < ret.num_inimigos; i++)
-		ret = handlers[ret.mov_type](ret, i);
+		ret = bot_joga_aux(ret, i);
 
 	return ret;
 }
