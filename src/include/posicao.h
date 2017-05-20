@@ -20,5 +20,6 @@ bool posicao_valida (posicao_s p);
 bool pos_elem (const posicao_p p, size_t num, posicao_s q);
 posicao_s posicao_new (abcissa x, ordenada y);
 size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s));
+size_t pos_mais_perto (const posicao_p ps, size_t N, posicao_s p);
 
 #endif /* _POSICAO_H */

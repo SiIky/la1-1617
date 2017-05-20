@@ -252,7 +252,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 	size_t i = pos_inimigos_ind(ret.inimigo, accao.dest, ret.num_inimigos);
 
 	ret = (i < ret.num_inimigos) ? /* se tiver inimigo */
-		ataca(&ret, ret.inimigo, i) :
+		ataca_inimigo(&ret, ret.inimigo, i) :
 		move_jogador(ret, accao.dest);
 
 	if (ret.matou)
@@ -323,6 +323,14 @@ estado_s bot_xadrez_rei (estado_s ret, size_t I)
 	assert(ret.mov_type == MOV_TYPE_XADREZ_REI);
 	assert(I < ret.num_inimigos);
 
+	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
+	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
+	posicao_s posicao = posicoes[i];
+	if (posicao_igual(posicao,ret.jog.pos))
+		ataca_jogador(&ret, I);
+	else
+		ret.inimigo[i].pos = posicao;
+
 	return ret;
 }
 
@@ -345,6 +353,13 @@ estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
 	 *   -----------
 	 * 2 | |X| |X| |
 	 */
+	posicao_p posicoes = posicoes_possiveis (&ret, ret.inimigo[I].pos);
+	size_t  i = pos_mais_perto (posicoes, I, ret.jog.pos);
+	posicao_s posicao = posicoes[i];
+	if (posicao_igual(posicao,ret.jog.pos))
+		ataca_jogador(&ret, I);
+	else
+		ret.inimigo[i].pos = posicao;
 
 	return ret;
 }
