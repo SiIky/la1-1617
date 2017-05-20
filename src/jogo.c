@@ -28,6 +28,14 @@ bool jogada_valida (const estado_p e, const posicao_p p)
 
 uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 {
+	/*
+	 *    1 0 1
+	 * 1 |X|X|X|
+	 *   -------
+	 * 0 |X|J|X|
+	 *   -------
+	 * 1 |X|X|X|
+	 */
 	assert(dst != NULL);
 	assert(o != NULL);
 
@@ -183,92 +191,6 @@ accao_s str2accao (const char * str)
 	return ret;
 }
 
-uchar jogadas_aux (estado_s e, jogada_p j, posicao_s p)
-{
-	assert(j != NULL);
-
-	if (!jogada_valida(&e, &p))
-		return 0;
-
-	char * link = accao2str(accao_new(e.nome, ACCAO_MOVE, e.jog.pos, p));
-	assert(link != NULL);
-
-	strcpy(j->link, link);
-	j->dest = p;
-
-	return 1;
-}
-
-uchar mov_type_xadrez_rei (const estado_p e, jogada_p j)
-{
-	assert(e != NULL);
-	assert(j != NULL);
-
-	/*
-	 *    1 0 1
-	 * 1 |X|X|X|
-	 *   -------
-	 * 0 |X|J|X|
-	 *   -------
-	 * 1 |X|X|X|
-	 */
-
-	uchar ret = 0;
-	for (abcissa x = e->jog.pos.x; x < e->jog.pos.x + 3; x++)
-		for (ordenada y = e->jog.pos.y; y < e->jog.pos.y + 3; y++)
-			ret += jogadas_aux(*e, (j + ret), posicao_new(x-1, y-1));
-
-	return ret;
-}
-
-uchar mov_type_xadrez_cavalo (const estado_p e, jogada_p j)
-{
-	assert(e != NULL);
-	assert(j != NULL);
-
-	/*
-	 *    2 1 0 1 2
-	 * 2 | |X| |X| |
-	 *   -----------
-	 * 1 |X| | | |X|
-	 *   -----------
-	 * 0 | | |J| | |
-	 *   -----------
-	 * 1 |X| | | |X|
-	 *   -----------
-	 * 2 | |X| |X| |
-	 */
-
-	uchar ret = 0;
-
-#define F(X, Y) ret += jogadas_aux(*e, (j + ret), posicao_new((X), (Y)))
-#define X e->jog.pos.x
-#define Y e->jog.pos.y
-	F(X - 2, Y - 1);
-	F(X - 2, Y + 1);
-	F(X - 1, Y - 2);
-	F(X - 1, Y + 2);
-	F(X + 1, Y - 2);
-	F(X + 1, Y + 2);
-	F(X + 2, Y - 1);
-	F(X + 2, Y + 1);
-#undef Y
-#undef X
-#undef F
-
-	return ret;
-}
-
-typedef uchar (* mov_handler) (const estado_p e, jogada_p j);
-const mov_handler * mov_handlers (void)
-{
-	static const mov_handler ret[MOV_TYPE_QUANTOS] = {
-		[MOV_TYPE_XADREZ_REI]    = mov_type_xadrez_rei,
-		[MOV_TYPE_XADREZ_CAVALO] = mov_type_xadrez_cavalo,
-	};
-	return ret;
-}
-
 jogada_p jogadas_possiveis (const estado_p e)
 {
 	assert(e != NULL);
@@ -287,11 +209,18 @@ jogada_p jogadas_possiveis (const estado_p e)
 	static uchar arr[SIZE] = "";
 	memset(arr, 0, SIZE);
 
-	const mov_handler * handlers = mov_handlers();
-	assert(handlers != NULL);
+	posicao_p pos = posicoes_possiveis(e, e->jog.pos);
+	assert(pos != NULL);
 
 	jogada_p ret = (jogada_p) (arr + 1);
-	quantas_jogadas(ret) = handlers[e->mov_type](e, ret);
+	uchar w = quantas_jogadas(ret) = quantas_jogadas(pos);
+
+	for (size_t i = 0; i < w; i++) {
+		char * link = accao2str(accao_new(e->nome, ACCAO_MOVE, e->jog.pos, pos[i]));
+		assert(link != NULL);
+		strcpy(ret[i].link, link);
+		ret[i].dest = pos[i];
+	}
 
 	return ret;
 #undef SIZE
@@ -327,7 +256,7 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 		move_jogador(ret, accao.dest);
 
 	if (ret.matou)
-		ret.jog.pos = accao.dest;
+		ret = move_jogador(ret, accao.dest);
 
 	if (fim_de_ronda(&ret) && posicao_igual(ret.jog.pos, ret.porta))
 		ret = init_estado(ret.nivel, (ret.score + (ret.jog.vida / 5)), ret.mov_type, ret.nome);
@@ -404,6 +333,19 @@ estado_s bot_xadrez_cavalo (estado_s ret, size_t I)
 	assert(ret.mov_type == MOV_TYPE_XADREZ_CAVALO);
 	assert(I < ret.num_inimigos);
 
+	/*
+	 *    2 1 0 1 2
+	 * 2 | |X| |X| |
+	 *   -----------
+	 * 1 |X| | | |X|
+	 *   -----------
+	 * 0 | | |J| | |
+	 *   -----------
+	 * 1 |X| | | |X|
+	 *   -----------
+	 * 2 | |X| |X| |
+	 */
+
 	return ret;
 }
 
@@ -417,23 +359,14 @@ const bot_handler * bot_handlers (void)
 	return ret;
 }
 
-estado_s bot_joga_aux (estado_s ret, size_t I)
-{
-	assert(ret.nome != NULL);
-	assert(ret.mov_type < MOV_TYPE_QUANTOS);
-	assert(I < ret.num_inimigos);
-
-	const bot_handler * handlers = bot_handlers();
-	assert(handlers != NULL);
-	return handlers[ret.mov_type](ret, I);
-}
-
 estado_s bot_joga (estado_s ret)
 {
 	assert(ret.nome != NULL);
 
+	const bot_handler * handlers = bot_handlers();
+	assert(handlers != NULL);
 	for (size_t i = 0; i < ret.num_inimigos; i++)
-		ret = bot_joga_aux(ret, i);
+		ret = handlers[ret.mov_type](ret, i);
 
 	return ret;
 }

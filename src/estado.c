@@ -108,10 +108,10 @@ estado_s init_estado (uchar nivel, uchar score, enum mov_type mt, const char * n
 estado_s move_jogador (estado_s e, posicao_s p)
 {
 	e.jog.pos = p;
-	e.matou = false;
 	/* nao perde vida no fim de uma ronda */
-	if (!fim_de_ronda(&e))
+	if (!fim_de_ronda(&e) && !e.matou)
 		e.jog.vida--;
+	e.matou = false;
 	return e;
 }
 
@@ -126,7 +126,7 @@ estado_s ataca (const estado_p e, const entidades i, uchar I)
 	assert(ni.vida > 0);
 
 	ni.vida--;
-	ne.jog.vida += 3;
+	ne.jog.vida += 2;
 
 	ne.inimigo[I] = ni;
 
