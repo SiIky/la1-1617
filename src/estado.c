@@ -152,10 +152,11 @@ estado_s ataca_jogador (const estado_p e, uchar I)
 
 	estado_s ne = *e;
 
-	assert(ne.jog.vida > 0);
+	ifjmp(fim_de_jogo(&ne), out);
 
 	ne.jog.vida--;
 	ne.inimigo[I].vida++;
 
+out:
 	return ne;
 }

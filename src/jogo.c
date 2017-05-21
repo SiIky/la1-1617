@@ -368,7 +368,7 @@ estado_s bot_joga (estado_s ret)
 {
 	assert(ret.nome != NULL);
 
-	for (size_t i = 0; i < ret.num_inimigos; i++)
+	for (size_t i = 0; i < ret.num_inimigos && !fim_de_jogo(&ret); i++)
 		ret = bot_joga_aux(ret, i);
 
 	return ret;
@@ -400,8 +400,12 @@ estado_s ler_estado (accao_s accao)
 
 	fclose(f);
 
-	ret = corre_accao(ret, accao);
-	ret = bot_joga(ret);
+	if (fim_de_jogo(&ret)) {
+		ret = init_estado(0, 0, MOV_TYPE_QUANTOS, ret.nome);
+	} else {
+		ret = corre_accao(ret, accao);
+		ret = bot_joga(ret);
+	}
 
 	return ret;
 }
@@ -469,4 +473,4 @@ struct highscore * ler_highscore (void)
 	ifnnull(f, fclose);
 
 	return ret;
-} 
+}
