@@ -48,9 +48,11 @@ size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
 size_t pos_sq_dist (posicao_s p1, posicao_s p2)
 {
 #define min(A, B) ((A) < (B)) ? (A) : (B)
-	size_t dx = p2.x - min(p1.x, p2.x);
-	size_t dy = p2.y - min(p1.y, p2.y);
-	return dx + dy;
+#define max(A, B) ((A) > (B)) ? (A) : (B)
+	size_t dx = max(p1.x, p2.x) - min(p1.x, p2.x);
+	size_t dy = max(p1.y, p2.y) - min(p1.y, p2.y);
+	return (dx * dx) + (dy * dy);
+#undef max
 #undef min
 }
 
@@ -60,7 +62,7 @@ size_t pos_mais_perto (const posicao_p ps, size_t N, posicao_s p)
 	assert(N > 0);
 	size_t ret = 0;
 	for (size_t i = 1; i < N; i++)
-		ret = (pos_sq_dist(ps[ret], p) >= pos_sq_dist(ps[i], p)) ?
+		ret = (pos_sq_dist(ps[ret], p) > pos_sq_dist(ps[i], p)) ?
 			i :
 			ret;
 	return ret;
