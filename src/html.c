@@ -7,6 +7,8 @@
 #include "jogo.h"
 
 #include "html.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void imprime_entidades (const entidades p, size_t max, char * img)
 {
@@ -117,12 +119,14 @@ void imprime_menu (const estado_p e)
 		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 		enum mov_type mt = mov_type_next(e->mov_type);
 		botao("Movement Type", 2, link(mt));
+
+		
 #undef link
 	}
 #undef botao
 }
 
-void game_over (void)
+void game_over (const estado_p e)
 {
 	printf(
 		"<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
@@ -130,6 +134,13 @@ void game_over (void)
 		"Game Over! Login as a new user or restart!"
 		"</TEXT>"
 	      );
+	printf(
+		"\n<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
+		"O score do %s : %d"
+		"</TEXT>", e->nome,e->score
+	      );
+	
 }
 
 void imprime_jogo (const estado_p e)
@@ -140,7 +151,7 @@ void imprime_jogo (const estado_p e)
 		ABRE_SVG(SVG_WIDTH, SVG_HEIGHT); {
 			if (fim_de_jogo(e)) {
 				COMMENT("GAME OVER");
-				game_over();
+				game_over(e);
 			} else {
 				COMMENT("tabuleiro");
 				imprime_tabuleiro(TAM, TAM);

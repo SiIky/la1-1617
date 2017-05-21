@@ -133,7 +133,7 @@ estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I)
 	assert(ni.vida > 0);
 
 	ni.vida--;
-	ne.jog.vida += 2;
+	//ne.jog.vida += 2;
 
 	ne.inimigo[I] = ni;
 

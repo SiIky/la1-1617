@@ -24,7 +24,7 @@ void create_gamefile (const char * fname)
 	/* if file exists and we can RW, GTFO */
 	ifjmp(file_frw_ok(path), out);
 
-	int fd = open(path, O_CREAT | O_RDWR);
+	int fd = open(path, O_CREAT | O_RDWR,0666);
 	check(fd < 0, "could not create state file");
 
 	fd = close(fd);
@@ -52,7 +52,7 @@ void login (void)
 	puts(
 		"<body>\n"
 		"<form action=\"http://localhost/cgi-bin/rogue\" method=\"get\">\n"
-		"Merdas: <input type=\"text\" name=\"nome\"><br>\n"
+		"Nome do utilizador: <input type=\"text\" name=\"nome\"><br>\n"
 		"<input type=\"submit\" value=\"login\">\n"
 		"</form>\n"
 		"</body>"

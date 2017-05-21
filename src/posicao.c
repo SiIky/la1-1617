@@ -1,8 +1,10 @@
 #include "check.h"
 
 #include <stdio.h>
+#include <math.h>
 
 #include "posicao.h"
+
 
 bool posicao_valida (posicao_s p)
 {

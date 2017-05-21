@@ -55,8 +55,9 @@
 
 #define TEXT_OFFSET 25
 
+
 #define BOTAO(X, Y, TXT, COR) \
-	(printf("<RECT Y=%u X=%u WIDTH=100 HEIGHT=40 FILL=\"%s\"/>" \
+	(printf("<RECT Y=%u X=%u WIDTH=400 HEIGHT=40 FILL=\"%s\"/>" \
 		"<TEXT Y=%u X=%u TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\"" \
 		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">%s</TEXT>", \
 		(Y), \

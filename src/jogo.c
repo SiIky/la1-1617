@@ -463,9 +463,10 @@ struct highscore * ler_highscore (void)
 	      "could not open highscore file to read");
 
 	memset(ret, 0, 3 * sizeof(struct highscore));
-	fread(ret, sizeof(struct highscore), 3, f);
+	int n = fread(ret, sizeof(struct highscore), 3, f);
+	UNUSED(n);
 
 	ifnnull(f, fclose);
 
 	return ret;
-}
+} 
