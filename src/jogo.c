@@ -96,15 +96,19 @@ const pospos_handler * pospos_handlers (void)
 
 uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (const estado_p, const posicao_p))
 {
+	assert(e != NULL);
 	assert(p != NULL);
 	assert(num > 0);
 	assert(f != NULL);
 
 	uchar ret = 0;
 
-	for (size_t r = 0; r < num; r++)
-		if (f(e, p + r))
-			p[ret++] = p[r];
+	for (size_t r = 0; r < num; r++) {
+		if (f(e, p + r)) {
+			p[ret] = p[r];
+			ret++;
+		}
+	}
 
 	return ret;
 }
@@ -125,13 +129,15 @@ posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 	posicao_p ret = (posicao_p) (arr + 1);
 
 	/* calcula as posicoes possiveis pra certo mov_type */
-	quantas_jogadas(ret) = handlers[e->mov_type](ret, &o);
+	uchar w = handlers[e->mov_type](ret, &o);
 
 	/* filtra as posicoes validas (i.e., dentro do mapa) */
-	quantas_jogadas(ret) = pos_filter(ret, quantas_jogadas(ret), posicao_valida);
+	w = pos_filter(ret, w, posicao_valida);
 
 	/* filtra as posicoes que podem ser jogadas */
-	quantas_jogadas(ret) = pospos_filter(e, ret, quantas_jogadas(ret), jogada_valida);
+	w = pospos_filter(e, ret, w, jogada_valida);
+
+	quantas_jogadas(ret) = w;
 
 	return ret;
 #undef SIZE
@@ -332,8 +338,12 @@ estado_s bot_joga_aux (estado_s ret, size_t I)
 {
 	posicao_p posicoes = posicoes_possiveis(&ret, ret.inimigo[I].pos);
 	assert(posicoes != NULL);
+	/* se nao houverem posicoes possiveis, nao faz nada */
+	ifjmp(quantas_jogadas(posicoes) == 0, out);
 
 	quantas_jogadas(posicoes) = pospos_filter(&ret, posicoes, quantas_jogadas(posicoes), nao_tem_inimigos);
+	/* se nao houverem posicoes possiveis, nao faz nada */
+	ifjmp(quantas_jogadas(posicoes) == 0, out);
 
 	size_t mp = pos_mais_perto(posicoes, quantas_jogadas(posicoes), ret.jog.pos);
 
@@ -341,6 +351,10 @@ estado_s bot_joga_aux (estado_s ret, size_t I)
 
 	posicao_s p = posicoes[mp];
 
+	/*
+	 * se a posicao mais prox do jog for igual a do jog
+	 * ataca o jog, senao move
+	 */
 	if (posicao_igual(ret.jog.pos, p))
 		ret = ataca_jogador(&ret, I);
 	else
