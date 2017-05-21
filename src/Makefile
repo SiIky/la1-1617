@@ -3,7 +3,7 @@ CC=gcc
 #CC=musl-gcc
 EXEC=rogue
 
-FLAGS=-static -Wall -Wextra -Werror -pedantic -Iinclude/
+FLAGS=-static -Wall -Wextra -Werror -lm -pedantic -Iinclude/
 DFLAGS=$(FLAGS) -g
 CFLAGS=$(FLAGS) -O3
 

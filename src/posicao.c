@@ -1,8 +1,10 @@
 #include "check.h"
 
 #include <stdio.h>
+#include <math.h>
 
 #include "posicao.h"
+
 
 bool posicao_valida (posicao_s p)
 {
@@ -48,6 +50,7 @@ size_t pos_sq_dist (posicao_s p1, posicao_s p2)
 #define min(A, B) ((A) < (B)) ? (A) : (B)
 	size_t dx = p2.x - min(p1.x, p2.x);
 	size_t dy = p2.y - min(p1.y, p2.y);
+	//return sqrt(((p2.x -p1.x)^2) + ((p2.y - p1.y)^2));
 	return (dx * dx) + (dy * dy);
 #undef min
 }
