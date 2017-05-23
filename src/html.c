@@ -178,8 +178,8 @@ void imprime_jogo (const estado_p e)
 				printf(
 		"<TEXT Y=%d X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
 		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
-		"pos: (%hhu, %hhu) vida: %hhu   ."
-		"</TEXT>", 180 + i*20, e->inimigo[i].pos.x, e->inimigo[i].pos.y, e->inimigo[i].vida
+		"id : %hhu ,pos: (%hhu, %hhu) vida: %hhu   ."
+		"</TEXT>", 180 + i*20,e->inimigo[i].id, e->inimigo[i].pos.x, e->inimigo[i].pos.y, e->inimigo[i].vida
 	      );
 			}
 	

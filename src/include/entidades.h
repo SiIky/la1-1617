@@ -4,6 +4,7 @@
 typedef struct {
 	posicao_s pos;
 	uchar vida;
+	uchar id;
 } entidade, *entidades;
 
 bool pos_inimigos (const entidades e, posicao_s p, size_t num_inimigos);

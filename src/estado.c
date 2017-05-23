@@ -50,6 +50,7 @@ void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 	for ((*num) = 0; (*num) < N; (*num)++) {
 		p[(*num)].pos = nova_posicao_unica(e);
 		p[(*num)].vida = vida;
+		p[(*num)].id = *num;
 	}
 }
 
@@ -124,7 +125,6 @@ bool nao_tem_inimigos (const estado_p e, const posicao_p p)
 
 estado_s ataca_inimigo (estado_s ret, uchar I)
 {
-	assert(I > 0);
 	assert(ret.inimigo[I].vida > 0);
 
 	ret.inimigo[I].vida--;
