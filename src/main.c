@@ -1,3 +1,4 @@
+/** @file */
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +13,10 @@
 #include "estado.h"
 #include "html.h"
 
-#define file_frw_ok(FNAME) (access(FNAME, F_OK | R_OK | W_OK) == 0)
-
+/**
+ * @brief Create a gamefile.
+ * @param fname Nome do jogador/ficheiro.
+ */
 void create_gamefile (const char * fname)
 {
 	assert(fname != NULL);
@@ -22,9 +25,9 @@ void create_gamefile (const char * fname)
 	assert(path != NULL);
 
 	/* if file exists and we can RW, GTFO */
-	ifjmp(file_frw_ok(path), out);
+	ifjmp(access(path, F_OK | R_OK | W_OK) == 0, out);
 
-	int fd = open(path, O_CREAT | O_RDWR,0666);
+	int fd = open(path, O_CREAT | O_RDWR, 0666);
 	check(fd < 0, "could not create state file");
 
 	fd = close(fd);
@@ -37,6 +40,11 @@ out:
 	return;
 }
 
+/**
+ * @brief Le o nome do jogador da `QUERY_STRING`
+ * @param args A `QUERY_STRING`
+ * @returns Uma string com o nome do jogador
+ * */
 char * ler_nome (char * args)
 {
 	assert(args != NULL);
@@ -47,6 +55,9 @@ char * ler_nome (char * args)
 		NULL;
 }
 
+/**
+ * @brief Imprime a pagina de login
+ * */
 void login (void)
 {
 	puts(
@@ -59,6 +70,10 @@ void login (void)
 	    );
 }
 
+/**
+ * @brief O entry point do programa
+ * @returns Codigo de sucesso
+ * */
 int main (void)
 {
 	srand(time(NULL));

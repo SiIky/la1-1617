@@ -18,12 +18,7 @@ SRC=entidades.c \
     main.c      \
     posicao.c
 
-OBJS=entidades.o \
-     estado.o    \
-     html.o      \
-     jogo.o      \
-     main.o      \
-     posicao.o
+OBJS=$(SRC:.c=.o)
 
 DEPS=$(SRC) $(INCLUDE) Makefile
 
