@@ -62,7 +62,7 @@ size_t pos_mais_perto (const posicao_p ps, size_t N, posicao_s p)
 	assert(N > 0);
 	size_t ret = 0;
 	for (size_t i = 1; i < N; i++)
-		ret = (pos_sq_dist(ps[ret], p) > pos_sq_dist(ps[i], p)) ?
+		ret = (pos_sq_dist(ps[ret], p) >= pos_sq_dist(ps[i], p)) ?
 			i :
 			ret;
 	return ret;

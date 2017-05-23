@@ -122,7 +122,7 @@ bool nao_tem_inimigos (const estado_p e, const posicao_p p)
 	return !pos_inimigos(e->inimigo, *p, e->num_inimigos);
 }
 
-estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I)
+estado_s ataca_inimigo (const estado_p e, uchar I)
 {
 	assert(e != NULL);
 	assert(i != NULL);
@@ -131,9 +131,14 @@ estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I)
 	entidade ni = i[I];
 
 	assert(ni.vida > 0);
-
-	ni.vida--;
-	//ne.jog.vida += 2;
+#if 0
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+	ni.vida = min(ni.vida, 2);
+#undef min
+#else
+	ne.inimigo[I].vida--;
+#endif
+	ne.jog.vida += 2;
 
 	ne.inimigo[I] = ni;
 
