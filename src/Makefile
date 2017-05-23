@@ -48,8 +48,7 @@ entrega: $(DEPS) $(IMAGENS)
 	zip -n : -9 entrega.zip $(DEPS) $(IMAGENS)
 
 doc:
-	doxygen -g
 	doxygen
 
 clean:
-	rm -rf entrega.zip Doxyfile latex html $(OBJS) $(EXEC)
+	rm -rf entrega.zip latex html $(OBJS) $(EXEC)

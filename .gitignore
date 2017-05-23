@@ -35,4 +35,7 @@
 rogue
 .tags
 install
+src/html/
 src/images/
+src/latex/
+*.html
