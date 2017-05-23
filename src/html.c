@@ -131,15 +131,10 @@ void game_over (const estado_p e)
 	printf(
 		"<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
 		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
-		"Game Over! Login as a new user or restart!"
-		"</TEXT>"
-	      );
-	printf(
-		"\n<TEXT Y=20 X=20 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
-		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
-		"O score do %s : %d"
+		"Game Over! Login as a new user or restart!\n O score do %s foi %hhu   ."
 		"</TEXT>", e->nome,e->score
 	      );
+	
 	
 }
 
@@ -171,6 +166,23 @@ void imprime_jogo (const estado_p e)
 
 			COMMENT("menu");
 			imprime_menu(e);
+
+			printf(
+		"<TEXT Y=160 X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
+		"vida: %hhu, score %hhu   ."
+		"</TEXT>", e->jog.vida, e->score
+	      );
+			for (int i = 0; i < e->num_inimigos; i++)
+			{
+				printf(
+		"<TEXT Y=%d X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
+		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
+		"pos: (%hhu, %hhu) vida: %hhu   ."
+		"</TEXT>", 180 + i*20, e->inimigo[i].pos.x, e->inimigo[i].pos.y, e->inimigo[i].vida
+	      );
+			}
+	
 		} FECHA_SVG;
 	} FECHA_BODY;
 }

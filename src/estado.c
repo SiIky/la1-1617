@@ -125,12 +125,9 @@ bool nao_tem_inimigos (const estado_p e, const posicao_p p)
 estado_s ataca_inimigo (estado_s ret, uchar I)
 {
 	assert(I > 0);
-
 	assert(ret.inimigo[I].vida > 0);
 
 	ret.inimigo[I].vida--;
-	//ne.jog.vida += 2;
-
 	if (entidade_dead(ret.inimigo + I)) {
 		ret.num_inimigos = entidade_remove(ret.inimigo, I, ret.num_inimigos);
 		ret.matou = true;
