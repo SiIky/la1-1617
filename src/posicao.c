@@ -1,7 +1,6 @@
 #include "check.h"
 
 #include <stdio.h>
-#include <math.h>
 
 #include "posicao.h"
 
@@ -45,15 +44,11 @@ size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
 	return w;
 }
 
-int pos_sq_dist (posicao_s p1, posicao_s p2)
+ssize_t pos_sq_dist (posicao_s p1, posicao_s p2)
 {
-#define min(A, B) ((A) < (B)) ? (A) : (B)
-#define max(A, B) ((A) > (B)) ? (A) : (B)
-	int dx = p1.x -p2.x;
-	int dy = p1.y -p2.y;
+	ssize_t dx = p1.x - p2.x;
+	ssize_t dy = p1.y - p2.y;
 	return (dx * dx) + (dy * dy);
-#undef max
-#undef min
 }
 
 size_t pos_mais_perto (const posicao_p ps, size_t N, posicao_s p)
