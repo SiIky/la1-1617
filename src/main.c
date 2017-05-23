@@ -44,7 +44,7 @@ out:
  * @brief Le o nome do jogador da `QUERY_STRING`
  * @param args A `QUERY_STRING`
  * @returns Uma string com o nome do jogador
- * */
+ */
 char * ler_nome (char * args)
 {
 	assert(args != NULL);
@@ -57,7 +57,7 @@ char * ler_nome (char * args)
 
 /**
  * @brief Imprime a pagina de login
- * */
+ */
 void login (void)
 {
 	puts(
@@ -73,7 +73,7 @@ void login (void)
 /**
  * @brief O entry point do programa
  * @returns Codigo de sucesso
- * */
+ */
 int main (void)
 {
 	srand(time(NULL));
