@@ -264,13 +264,12 @@ estado_s accao_move_handler (estado_s ret, accao_s accao)
 	 * nao faz nada
 	 */
 	ifjmp(!posicao_igual(accao.jog, ret.jog.pos), out);
-	ifjmp(!posicao_valida(accao.jog), out);
 	ifjmp(!posicao_valida(accao.dest), out);
 
 	size_t i = pos_inimigos_ind(ret.inimigo, accao.dest, ret.num_inimigos);
 
 	ret = (i < ret.num_inimigos) ? /* se tiver inimigo */
-		ataca_inimigo(&ret, ret.inimigo, i) :
+		ataca_inimigo(ret, i) :
 		move_jogador(ret, accao.dest);
 
 	if (ret.matou)

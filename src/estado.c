@@ -122,28 +122,22 @@ bool nao_tem_inimigos (const estado_p e, const posicao_p p)
 	return !pos_inimigos(e->inimigo, *p, e->num_inimigos);
 }
 
-estado_s ataca_inimigo (const estado_p e, const entidades i, uchar I)
+estado_s ataca_inimigo (estado_s ret, uchar I)
 {
-	assert(e != NULL);
-	assert(i != NULL);
+	assert(I > 0);
 
-	estado_s ne = *e;
-	entidade ni = i[I];
+	assert(ret.inimigo[I].vida > 0);
 
-	assert(ni.vida > 0);
-
-	ni.vida--;
+	ret.inimigo[I].vida--;
 	//ne.jog.vida += 2;
 
-	ne.inimigo[I] = ni;
-
-	if (entidade_dead(&ni)) {
-		ne.num_inimigos = entidade_remove(ne.inimigo, I, ne.num_inimigos);
-		ne.matou = true;
-		ne.score++;
+	if (entidade_dead(ret.inimigo + I)) {
+		ret.num_inimigos = entidade_remove(ret.inimigo, I, ret.num_inimigos);
+		ret.matou = true;
+		ret.score++;
 	}
 
-	return ne;
+	return ret;
 }
 
 estado_s ataca_jogador (const estado_p e, uchar I)
