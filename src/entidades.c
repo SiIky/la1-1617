@@ -1,3 +1,4 @@
+/** @file */
 #include "check.h"
 
 #include "posicao.h"

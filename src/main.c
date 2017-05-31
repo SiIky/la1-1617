@@ -1,4 +1,7 @@
 /** @file */
+/** @mainpage LA1-1617: Rogue-like
+ * # qq coisa aqui
+ */
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +17,7 @@
 #include "html.h"
 
 /**
- * @brief Create a gamefile.
+ * @brief Cria uma gamefile.
  * @param fname Nome do jogador/ficheiro.
  */
 void create_gamefile (const char * fname)

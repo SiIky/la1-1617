@@ -1,3 +1,4 @@
+/** @file */
 #ifndef _ENTIDADES_H
 #define _ENTIDADES_H
 

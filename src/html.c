@@ -1,3 +1,4 @@
+/** @file */
 #include "check.h"
 
 #include <stdlib.h>
@@ -120,7 +121,7 @@ void imprime_menu (const estado_p e)
 		enum mov_type mt = mov_type_next(e->mov_type);
 		botao("Movement Type", 2, link(mt));
 
-		
+
 #undef link
 	}
 #undef botao
@@ -134,8 +135,8 @@ void game_over (const estado_p e)
 		"Game Over! Login as a new user or restart!\n O score do %s foi %hhu   ."
 		"</TEXT>", e->nome,e->score
 	      );
-	
-	
+
+
 }
 
 void imprime_jogo (const estado_p e)
@@ -182,7 +183,7 @@ void imprime_jogo (const estado_p e)
 		"</TEXT>", 180 + i*20,e->inimigo[i].id, e->inimigo[i].pos.x, e->inimigo[i].pos.y, e->inimigo[i].vida
 	      );
 			}
-	
+
 		} FECHA_SVG;
 	} FECHA_BODY;
 }

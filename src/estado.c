@@ -1,3 +1,4 @@
+/** @file */
 #include "check.h"
 
 #include <stdio.h>
@@ -7,6 +8,12 @@
 #include "estado.h"
 #include "entidades.h"
 
+/**
+ * @brief Testa se uma posicao contem algum inimigo, obstaculo ou o jogador
+ * @param e O estado do jogo
+ * @param p A posicao a testar
+ * @returns Falso se estiver vazia, verdadeiro caso contrario
+ */
 bool posicao_ocupada (const estado_p e, posicao_s p)
 {
 	assert(e != NULL);
@@ -15,6 +22,11 @@ bool posicao_ocupada (const estado_p e, posicao_s p)
 		|| posicao_igual(e->jog.pos, p));
 }
 
+/**
+ * @brief Cria uma posicao aleatoria nao ocupada
+ * @param e O estado do jogo
+ * @returns A nova posicao unica
+ */
 posicao_s nova_posicao_unica (const estado_p e)
 {
 	assert(e != NULL);
@@ -40,6 +52,14 @@ bool fim_de_ronda (const estado_p e)
 	return e->num_inimigos == 0;
 }
 
+/**
+ * @brief Inicializa um array de entidades
+ * @param e O estado do jogo
+ * @param p Um array de entidades
+ * @param N O comprimento do array
+ * @param num O numero de entidades que foram inicializadas
+ * @param vida Vida a dar as entidades
+ */
 void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 {
 	assert(e != NULL);
@@ -54,7 +74,18 @@ void init_entidades (estado_p e, entidades p, uchar N, uchar * num, uchar vida)
 	}
 }
 
+/**
+ * @brief Calcula o minimo entre dois numeros
+ * @param A Um numero
+ * @param B Um numero
+ * @returns O minimo entre A e B
+ */
 #define min(A, B)	((A) < (B)) ? (A) : (B)
+/**
+ * @brief Inicializa os inimigos
+ * @param e O estado do jogo
+ * @returns O novo estado
+ */
 estado_s init_inimigos (estado_s e)
 {
 	uchar N = min(MIN_INIMIGOS + e.nivel, MAX_INIMIGOS);
@@ -62,6 +93,11 @@ estado_s init_inimigos (estado_s e)
 	return e;
 }
 
+/**
+ * @brief Inicializa os obstaculos
+ * @param e O estado do jogo
+ * @returns O novo estado
+ */
 estado_s init_obstaculos (estado_s e)
 {
 	uchar N = min(MIN_OBSTACULOS + e.nivel, MAX_OBSTACULOS);
@@ -70,6 +106,11 @@ estado_s init_obstaculos (estado_s e)
 }
 #undef min
 
+/**
+ * @brief Inicializa o jogador
+ * @param e O estado do jogo
+ * @returns O novo estado
+ */
 estado_s init_jogador (estado_s e)
 {
 	e.jog.pos = nova_posicao_unica(&e);
@@ -77,6 +118,11 @@ estado_s init_jogador (estado_s e)
 	return e;
 }
 
+/**
+ * @brief Inicializa a porta
+ * @param e O estado do jogo
+ * @returns O novo estado
+ */
 estado_s init_porta (estado_s e)
 {
 	e.porta = nova_posicao_unica(&e);
@@ -128,12 +174,14 @@ estado_s ataca_inimigo (estado_s ret, uchar I)
 	assert(ret.inimigo[I].vida > 0);
 
 	ret.inimigo[I].vida--;
-	if (entidade_dead(ret.inimigo + I)) {
-		ret.num_inimigos = entidade_remove(ret.inimigo, I, ret.num_inimigos);
-		ret.matou = true;
-		ret.score++;
-	}
 
+	ifjmp(!entidade_dead(ret.inimigo + I), out);
+
+	ret.num_inimigos = entidade_remove(ret.inimigo, I, ret.num_inimigos);
+	ret.matou = true;
+	ret.score++;
+
+out:
 	return ret;
 }
 

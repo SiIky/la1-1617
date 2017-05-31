@@ -1,3 +1,4 @@
+/** @file */
 #ifndef _POSICAO_H
 #define _POSICAO_H
 
