@@ -120,8 +120,6 @@ void imprime_menu (const estado_p e)
 		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 		enum mov_type mt = mov_type_next(e->mov_type);
 		botao("Movement Type", 2, link(mt));
-
-
 #undef link
 	}
 #undef botao
@@ -169,21 +167,29 @@ void imprime_jogo (const estado_p e)
 			imprime_menu(e);
 
 			printf(
-		"<TEXT Y=160 X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
-		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
-		"vida: %hhu, score %hhu   ."
-		"</TEXT>", e->jog.vida, e->score
-	      );
-			for (int i = 0; i < e->num_inimigos; i++)
-			{
-				printf(
-		"<TEXT Y=%d X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
-		"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
-		"id : %hhu ,pos: (%hhu, %hhu) vida: %hhu   ."
-		"</TEXT>", 180 + i*20,e->inimigo[i].id, e->inimigo[i].pos.x, e->inimigo[i].pos.y, e->inimigo[i].vida
-	      );
-			}
+				"<TEXT Y=160 X=460 TEXT-ANCHOR=\"midle\" TEXT-ALIGN=\"center\""
+				"FONT-FAMILY=\"serif\" FONT-WEIGHT=\"bold\">"
+				"vida: %hhu, score %hhu"
+				"</TEXT>", e->jog.vida, e->score
+			      );
 
+
+			puts("<table><tr><th>ID</th><th>Posicao</th><th>Vida</th></tr>");
+
+			for (int i = 0; i < e->num_inimigos; i++)
+				printf(
+					"<tr>"
+					"<td>%d</td>"
+					"<td>(%hhu, %hhu)</td>"
+					"<td>%hhu</td>"
+					"</tr>\n",
+					i,
+					e->inimigo[i].pos.x,
+					e->inimigo[i].pos.y,
+					e->inimigo[i].vida
+				      );
+
+			puts("</table>");
 		} FECHA_SVG;
 	} FECHA_BODY;
 }

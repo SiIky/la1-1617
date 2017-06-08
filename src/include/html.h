@@ -2,8 +2,8 @@
 #ifndef _HTML_H
 #define _HTML_H
 
-#define SVG_WIDTH	800
-#define SVG_HEIGHT	800
+#define SVG_WIDTH	630
+#define SVG_HEIGHT	400
 #define ESCALA		40UL
 
 #define IMAGE_PATH	"http://localhost/images/"

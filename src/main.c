@@ -73,6 +73,23 @@ void login (void)
 	    );
 }
 
+void print_highscore (const struct highscore * hs)
+{
+	puts("<table><tr><th>Jogador</th><th>Score</th></tr>");
+
+	for (size_t i = 0; i < 3; i++)
+		printf(
+			"<tr>"
+			"<td>%s</td>"
+			"<td>%hhu</td>"
+			"</tr>\n",
+			hs[i].nome,
+			hs[i].score
+		      );
+
+	puts("</table>");
+}
+
 /**
  * @brief O entry point do programa
  * @returns Codigo de sucesso
@@ -112,6 +129,7 @@ int main (void)
 		update_highscore(&e, hs);
 		escreve_highscore(hs);
 		login();
+		print_highscore(hs);
 	}
 
 	imprime_jogo(&e);
