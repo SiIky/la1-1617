@@ -73,6 +73,10 @@ void login (void)
 	    );
 }
 
+/**
+ * @brief Imprime o highscore.
+ * @param hs O array de highscores.
+ */
 void print_highscore (const struct highscore * hs)
 {
 	puts("<table><tr><th>Jogador</th><th>Score</th></tr>");

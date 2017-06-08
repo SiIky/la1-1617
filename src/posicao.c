@@ -19,6 +19,13 @@ bool posicao_igual (posicao_s p1, posicao_s p2)
 	return p1.x == p2.x && p1.y == p2.y;
 }
 
+/**
+ * @brief Filtra um array de posicoes.
+ * @param p Um array de posicoes.
+ * @param num O numero de posicoes no array.
+ * @param f O predicado.
+ * @returns O numero de posicoes que satisfizeram o predicado.
+ */
 size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
 {
 	assert(p != NULL);
@@ -34,6 +41,12 @@ size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
 	return w;
 }
 
+/**
+ * @brief Calcula o quadrado da distancia entre 2 posicoes.
+ * @param p1 Uma posicao.
+ * @param p2 Outra posicao.
+ * @returns O quadrado da distancia entre as 2 posicoes.
+ */
 ssize_t pos_sq_dist (posicao_s p1, posicao_s p2)
 {
 	ssize_t dx = p1.x - p2.x;

@@ -2,16 +2,40 @@
 #ifndef _POSICAO_H
 #define _POSICAO_H
 
+/**
+ * @brief O tamanho do tabuleiro.
+ */
 #define TAM		10
 
+/**
+ * @brief Um char sem sinal.
+ */
 typedef unsigned char uchar;
+
+/**
+ * @brief Uma abcissa.
+ */
 typedef uchar abcissa;
+
+/**
+ * @brief Uma ordenada.
+ */
 typedef uchar ordenada;
 
+/**
+ * @brief Uma posicao.
+ */
 typedef struct {
+	/** A abcissa da posicao. */
 	abcissa x;
+	/** A ordenada da posicao. */
 	ordenada y;
-} posicao_s, *posicao_p;
+} posicao_s;
+
+/**
+ * @brief Um apontador para uma posicao_s.
+ */
+typedef posicao_s * posicao_p;
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -44,6 +68,7 @@ posicao_s posicao_new (abcissa x, ordenada y);
  * @param p Array de posicoes a filtrar.
  * @param num Numero de elementos do array.
  * @param f Funcao a testar em cada posicao.
+ * @returns Numero de posicoes que satisfazem o predicado.
  */
 size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s));
 

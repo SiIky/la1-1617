@@ -65,7 +65,12 @@ typedef struct {
 	entidade inimigo[MAX_INIMIGOS];
 	/** Os obstaculos */
 	entidade obstaculo[MAX_OBSTACULOS];
-} estado_s, *estado_p;
+} estado_s;
+
+/**
+ * @brief Um apontador para um estado_s.
+ */
+typedef estado_s * estado_p;
 
 /**
  * @brief Verifica se o jogo chegou ao fim

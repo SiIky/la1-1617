@@ -65,6 +65,14 @@ uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 }
 
 /**
+ * @brief Calcula uma nova posicao e guarda-a no array de destino.
+ * @param X Abcissa da nova posicao.
+ * @param Y Ordenada da nova posicao.
+ * @returns A nova posicao.
+ */
+#define F(X, Y) dst[ret++] = posicao_new((X), (Y))
+
+/**
  * @brief Calcula posicoes possiveis para o tipo de movimento cavalo de xadrez.
  * @param dst Array de destino.
  * @param o Posicao de origem.
@@ -89,13 +97,6 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 
 	uchar ret = 0;
 
-/**
- * @brief Calcula uma nova posicao e guarda-a no array de destino.
- * @param X Abcissa da nova posicao.
- * @param Y Ordenada da nova posicao.
- * @returns A nova posicao.
- */
-#define F(X, Y) dst[ret++] = posicao_new((X), (Y))
 	F(o->x - 2, o->y - 1);
 	F(o->x - 2, o->y + 1);
 	F(o->x - 1, o->y - 2);
@@ -104,9 +105,9 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 	F(o->x + 1, o->y + 2);
 	F(o->x + 2, o->y - 1);
 	F(o->x + 2, o->y + 1);
-#undef F
-
 	return ret;
+
+#undef F
 }
 
 /**
@@ -155,7 +156,15 @@ uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (cons
 }
 
 /**
- * @brief Calcula
+ * @brief Tamanho maximo, em bytes, das posicoes possiveis.
+ */
+#define SIZE (1 + (sizeof(posicao_s) * NJOGADAS))
+
+/**
+ * @brief Calcula um conjunto de posicoes possiveis.
+ * @param e O estado actual.
+ * @param o A posicao de origem.
+ * @returns As posicoes possiveis.
  */
 posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 {
@@ -163,7 +172,6 @@ posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 	assert(posicao_valida(o));
 
-#define SIZE (1 + (sizeof(posicao_s) * NJOGADAS))
 	static uchar arr[SIZE] = "";
 	memset(arr, 0, SIZE);
 
@@ -253,14 +261,17 @@ accao_s str2accao (const char * str)
 	return ret;
 }
 
+/**
+ * @brief Tamanho maximo, em bytes, das jogadas possiveis.
+ */
+#define SIZE (1 + (sizeof(jogada_s) * NJOGADAS))
+
 jogada_p jogadas_possiveis (const estado_p e)
 {
 	assert(e != NULL);
 	assert(e->nome != NULL);
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 
-	/* tamanho do array em bytes */
-#define SIZE (1 + (sizeof(jogada_s) * NJOGADAS))
 
 	/*
 	 * [0] uchar => quantas jogadas possiveis existem
@@ -304,7 +315,7 @@ estado_s accao_reset_handler (estado_s e, accao_s accao)
 
 /**
  * @brief Calcula o novo estado para o tipo de accao ACCAO_MOVE.
- * @param e O estado de jogo actual.
+ * @param ret O estado de jogo actual.
  * @param accao A accao.
  * @returns O novo estado.
  */
@@ -338,11 +349,6 @@ out:
 	return ret;
 }
 
-/**
- * @brief Calcula o tipo de movimento seguinte.
- * @param ret Tipo de movimento actual.
- * @returns O novo tipo de movimento.
- */
 enum mov_type mov_type_next (enum mov_type ret)
 {
 	assert(ret < MOV_TYPE_QUANTOS);
@@ -351,7 +357,7 @@ enum mov_type mov_type_next (enum mov_type ret)
 
 /**
  * @brief Calcula o novo estado para o tipo de accao ACCAO_CHANGE_MT.
- * @param e O estado de jogo actual.
+ * @param ret O estado de jogo actual.
  * @param accao A accao.
  * @returns O novo estado.
  */
@@ -372,7 +378,7 @@ out:
 
 /**
  * @brief Calcula o novo estado para o tipo de accao ACCAO_IGNORE.
- * @param e O estado de jogo actual.
+ * @param ret O estado de jogo actual.
  * @param accao A accao.
  * @returns O novo estado.
  */
@@ -420,6 +426,12 @@ out:
 	return ret;
 }
 
+/**
+ * @brief Actualiza o estado depois de jogar com o bot de indice I.
+ * @param ret O estado actual.
+ * @param I O indice do bot a jogar.
+ * @returns O novo estado.
+ */
 estado_s bot_joga_aux (estado_s ret, size_t I)
 {
 	posicao_p posicoes = posicoes_possiveis(&ret, ret.inimigo[I].pos);
@@ -450,6 +462,11 @@ out:
 	return ret;
 }
 
+/**
+ * @brief Calcula o novo estado depois de todos os bots jogarem.
+ * @param ret O estado actual.
+ * @returns O novo estado.
+ */
 estado_s bot_joga (estado_s ret)
 {
 	assert(ret.nome != NULL);

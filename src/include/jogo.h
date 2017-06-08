@@ -76,7 +76,12 @@ typedef struct {
 	posicao_s dest;
 	/** O link com a accao. */
 	char link[JOGADA_LINK_MAX_BUFFER];
-} jogada_s, *jogada_p;
+} jogada_s;
+
+/**
+ * @brief Um apontador para uma jogada_s.
+ */
+typedef jogada_s * jogada_p;
 
 /**
  * @brief Ficheiro de highscore.
@@ -93,18 +98,81 @@ struct highscore {
 	uchar score;
 };
 
+/**
+ * @brief Calcula todas as jogadas possiveis do jogador.
+ * @param e O estado actual.
+ * @returns Uma lista de jogadas.
+ */
 jogada_p jogadas_possiveis (const estado_p e);
+
+/**
+ * @brief Le o estado a partir do ficheiro.
+ * @param accao A accao a executar.
+ * @returns O estado lido.
+ */
 estado_s ler_estado (accao_s accao);
+
+/**
+ * @brief Escreve o estado de jogo no ficheiro.
+ * @param e O estado a guardar.
+ */
 void escreve_estado (const estado_p e);
+
+/**
+ * @brief Calcula o caminho de um ficheiro de jogo.
+ * @param name Nome do jogador.
+ * @returns O caminho do ficheiro.
+ */
 char * pathname (const char * name);
 
+/**
+ * @brief Cria uma nova accao.
+ * @param nome Nome do jogador.
+ * @param accao Tipo de accao.
+ * @param jog posicao do jogador.
+ * @param dest posicao do destino.
+ * @returns A nova accao.
+ */
 accao_s accao_new (const char * nome, enum accao accao, posicao_s jog, posicao_s dest);
+
+/**
+ * @brief Gera um Link.
+ * @param accao A accao.
+ * @returns O link.
+ */
 char * accao2str (accao_s accao);
+
+/**
+ * @brief Le um link.
+ * @param str O link.
+ * @returns A nova accao.
+ */
 accao_s str2accao (const char * str);
+
+/**
+ * @brief Calcula o tipo de movimento seguinte.
+ * @param ret Tipo de movimento actual.
+ * @returns O novo tipo de movimento.
+ */
 enum mov_type mov_type_next (enum mov_type ret);
 
+/**
+ * @brief Le os highscores a partir do ficheiro.
+ * @returns O array de highscores.
+ */
 struct highscore * ler_highscore (void);
+
+/**
+ * @brief Escreve os highscores no ficheiro
+ * @param hs O array de highscores.
+ */
 void escreve_highscore (struct highscore hs[3]);
+
+/**
+ * @brief Actualiza o array de highscores com o score do jogador actual.
+ * @param e O estado actual.
+ * @param hs O array de highscores.
+ */
 void update_highscore (const estado_p e, struct highscore hs[3]);
 
 #endif /* _JOGO_H */

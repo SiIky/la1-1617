@@ -12,7 +12,12 @@ typedef struct {
 	uchar vida;
 	/** O id da entidade */
 	uchar id;
-} entidade, *entidades;
+} entidade;
+
+/**
+ * @brief Um apontador para uma entidade.
+ */
+typedef entidade * entidades;
 
 /**
  * @brief Verifica se existe alguma entidade com uma certa posicao
