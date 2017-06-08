@@ -3,6 +3,9 @@
 #define _CHECK_H
 
 #if 0
+/**
+ * @brief Desactiva asserts
+ */
 #define NDEBUG
 #endif
 #include <assert.h>

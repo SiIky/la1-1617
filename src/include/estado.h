@@ -31,8 +31,11 @@
  * @brief O tipo de movimento
  */
 enum mov_type {
+	/** Tipo de movimento do rei de xadrez. */
 	MOV_TYPE_XADREZ_REI,
+	/** Tipo de movimento do cavalo de xadrez. */
 	MOV_TYPE_XADREZ_CAVALO,
+	/** Numero de tipos de movimentos diferentes. */
 	MOV_TYPE_QUANTOS,
 };
 

@@ -174,6 +174,7 @@ estado_s ataca_inimigo (estado_s ret, uchar I)
 	assert(ret.inimigo[I].vida > 0);
 
 	ret.inimigo[I].vida--;
+	ret.jog.vida += 5;
 
 	ifjmp(!entidade_dead(ret.inimigo + I), out);
 

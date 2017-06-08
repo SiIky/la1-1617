@@ -19,6 +19,12 @@
  * [ ] Damas
  */
 
+/**
+ * @brief Verifica se uma jogada e válida.
+ * @param e Estado actual do jogo.
+ * @param p Posicao a testar.
+ * @returns Verdadeiro se for valida, falso caso contrario.
+ */
 bool jogada_valida (const estado_p e, const posicao_p p)
 {
 	assert(e != NULL);
@@ -27,6 +33,12 @@ bool jogada_valida (const estado_p e, const posicao_p p)
 	    && !(pos_inimigos(e->obstaculo, *p, e->num_obstaculos));
 }
 
+/**
+ * @brief Calcula posicoes possiveis para o tipo de movimento rei de xadrez.
+ * @param dst Array de destino.
+ * @param o Posicao de origem.
+ * @returns Numero de posicoes escritas.
+ */
 uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 {
 	/*
@@ -52,6 +64,12 @@ uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 	return ret;
 }
 
+/**
+ * @brief Calcula posicoes possiveis para o tipo de movimento cavalo de xadrez.
+ * @param dst Array de destino.
+ * @param o Posicao de origem.
+ * @returns Numero de posicoes escritas.
+ */
 uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 {
 	/*
@@ -71,6 +89,12 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 
 	uchar ret = 0;
 
+/**
+ * @brief Calcula uma nova posicao e guarda-a no array de destino.
+ * @param X Abcissa da nova posicao.
+ * @param Y Ordenada da nova posicao.
+ * @returns A nova posicao.
+ */
 #define F(X, Y) dst[ret++] = posicao_new((X), (Y))
 	F(o->x - 2, o->y - 1);
 	F(o->x - 2, o->y + 1);
@@ -85,7 +109,15 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 	return ret;
 }
 
+/**
+ * @brief Tipo de funcoes que calculam as posicoes possiveis para um tipo de movimento.
+ */
 typedef uchar (* pospos_handler) (posicao_p dst, const posicao_p o);
+
+/**
+ * @brief Devolve um array de apontadores para funcoes que calculam posicoes possiveis.
+ * @returns Array de apontadores de funcoes.
+ */
 const pospos_handler * pospos_handlers (void)
 {
 	static const pospos_handler ret[MOV_TYPE_QUANTOS] = {
@@ -95,6 +127,14 @@ const pospos_handler * pospos_handlers (void)
 	return ret;
 }
 
+/**
+ * @brief Filtra um conjunto de posicoes dado uma fucao.
+ * @param e O estado actual.
+ * @param p O array de posicoes.
+ * @param num O numero de posicoes.
+ * @param f O filtro.
+ * @returns Numero de posicoes que satisfizeram o filtro.
+ */
 uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (const estado_p, const posicao_p))
 {
 	assert(e != NULL);
@@ -114,6 +154,9 @@ uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (cons
 	return ret;
 }
 
+/**
+ * @brief Calcula
+ */
 posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 {
 	assert(e != NULL);
@@ -245,6 +288,12 @@ jogada_p jogadas_possiveis (const estado_p e)
 #undef SIZE
 }
 
+/**
+ * @brief Calcula o novo estado para o tipo de accao ACCAO_RESET.
+ * @param e O estado de jogo actual.
+ * @param accao A accao.
+ * @returns O novo estado.
+ */
 estado_s accao_reset_handler (estado_s e, accao_s accao)
 {
 	UNUSED(accao);
@@ -253,6 +302,12 @@ estado_s accao_reset_handler (estado_s e, accao_s accao)
 	return init_estado(0, 0, MOV_TYPE_QUANTOS, e.nome);
 }
 
+/**
+ * @brief Calcula o novo estado para o tipo de accao ACCAO_MOVE.
+ * @param e O estado de jogo actual.
+ * @param accao A accao.
+ * @returns O novo estado.
+ */
 estado_s accao_move_handler (estado_s ret, accao_s accao)
 {
 	assert(ret.nome != NULL);
@@ -283,12 +338,23 @@ out:
 	return ret;
 }
 
+/**
+ * @brief Calcula o tipo de movimento seguinte.
+ * @param ret Tipo de movimento actual.
+ * @returns O novo tipo de movimento.
+ */
 enum mov_type mov_type_next (enum mov_type ret)
 {
 	assert(ret < MOV_TYPE_QUANTOS);
 	return (ret + 1) % MOV_TYPE_QUANTOS;
 }
 
+/**
+ * @brief Calcula o novo estado para o tipo de accao ACCAO_CHANGE_MT.
+ * @param e O estado de jogo actual.
+ * @param accao A accao.
+ * @returns O novo estado.
+ */
 estado_s accao_change_mt_handler (estado_s ret, accao_s accao)
 {
 	assert(ret.nome != NULL);
@@ -304,6 +370,12 @@ out:
 	return ret;
 }
 
+/**
+ * @brief Calcula o novo estado para o tipo de accao ACCAO_IGNORE.
+ * @param e O estado de jogo actual.
+ * @param accao A accao.
+ * @returns O novo estado.
+ */
 estado_s accao_ignore_handler (estado_s ret, accao_s accao)
 {
 	UNUSED(accao);
@@ -312,7 +384,15 @@ estado_s accao_ignore_handler (estado_s ret, accao_s accao)
 	return ret;
 }
 
+/**
+ * @brief Tipo de funcoes que calculam um novo estado para um tipo de accao.
+ */
 typedef estado_s (* accao_handler) (estado_s ret, accao_s accao);
+
+/**
+ * @brief Devolve um array de apontadores para funcoes que calculam o novo estado para uma accao.
+ * @returns Array de apontadores de funcoes.
+ */
 const accao_handler * accao_handlers (void)
 {
 	static const accao_handler ret[ACCAO_INVALID] = {
@@ -324,6 +404,12 @@ const accao_handler * accao_handlers (void)
 	return ret;
 }
 
+/**
+ * @brief Calcula o novo estado de acordo com a accao recebida.
+ * @param ret O estado actual.
+ * @param accao A accao.
+ * @returns O novo estado.
+ */
 estado_s corre_accao (estado_s ret, accao_s accao)
 {
 	ifjmp(accao.accao >= ACCAO_INVALID, out);
