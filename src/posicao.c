@@ -5,7 +5,6 @@
 
 #include "posicao.h"
 
-
 bool posicao_valida (posicao_s p)
 {
 	/*
@@ -18,16 +17,6 @@ bool posicao_valida (posicao_s p)
 bool posicao_igual (posicao_s p1, posicao_s p2)
 {
 	return p1.x == p2.x && p1.y == p2.y;
-}
-
-bool pos_elem (const posicao_p p, size_t num, posicao_s q)
-{
-	assert(p != NULL);
-	bool ret = false;
-	for (size_t i = 0;
-	     i < num && !(ret = posicao_igual(p[i], q));
-	     i++);
-	return ret;
 }
 
 size_t pos_filter (posicao_p p, size_t num, bool (* f) (posicao_s))
