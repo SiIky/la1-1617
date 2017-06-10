@@ -23,6 +23,11 @@ typedef uchar abcissa;
 typedef uchar ordenada;
 
 /**
+ * @var typedef posicao_s * posicao_p
+ * @brief Um apontador para uma posicao_s.
+ */
+
+/**
  * @brief Uma posicao.
  */
 typedef struct {
@@ -30,12 +35,7 @@ typedef struct {
 	abcissa x;
 	/** A ordenada da posicao. */
 	ordenada y;
-} posicao_s;
-
-/**
- * @brief Um apontador para uma posicao_s.
- */
-typedef posicao_s * posicao_p;
+} posicao_s, * posicao_p;
 
 #include <stddef.h>
 #include <stdbool.h>

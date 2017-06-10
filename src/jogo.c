@@ -65,12 +65,12 @@ uchar pospos_xadrez_rei (posicao_p dst, const posicao_p o)
 }
 
 /**
+ * @def F(X, Y)
  * @brief Calcula uma nova posicao e guarda-a no array de destino.
  * @param X Abcissa da nova posicao.
  * @param Y Ordenada da nova posicao.
  * @returns A nova posicao.
  */
-#define F(X, Y) dst[ret++] = posicao_new((X), (Y))
 
 /**
  * @brief Calcula posicoes possiveis para o tipo de movimento cavalo de xadrez.
@@ -97,6 +97,7 @@ uchar pospos_xadrez_cavalo (posicao_p dst, const posicao_p o)
 
 	uchar ret = 0;
 
+#define F(X, Y) dst[ret++] = posicao_new((X), (Y))
 	F(o->x - 2, o->y - 1);
 	F(o->x - 2, o->y + 1);
 	F(o->x - 1, o->y - 2);
@@ -156,9 +157,9 @@ uchar pospos_filter (const estado_p e, posicao_p p, size_t num, bool (* f) (cons
 }
 
 /**
+ * @def SIZE
  * @brief Tamanho maximo, em bytes, das posicoes possiveis.
  */
-#define SIZE (1 + (sizeof(posicao_s) * NJOGADAS))
 
 /**
  * @brief Calcula um conjunto de posicoes possiveis.
@@ -172,6 +173,7 @@ posicao_p posicoes_possiveis (const estado_p e, posicao_s o)
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 	assert(posicao_valida(o));
 
+#define SIZE (1 + (sizeof(posicao_s) * NJOGADAS))
 	static uchar arr[SIZE] = "";
 	memset(arr, 0, SIZE);
 
@@ -262,9 +264,9 @@ accao_s str2accao (const char * str)
 }
 
 /**
+ * @def SIZE
  * @brief Tamanho maximo, em bytes, das jogadas possiveis.
  */
-#define SIZE (1 + (sizeof(jogada_s) * NJOGADAS))
 
 jogada_p jogadas_possiveis (const estado_p e)
 {
@@ -272,13 +274,13 @@ jogada_p jogadas_possiveis (const estado_p e)
 	assert(e->nome != NULL);
 	assert(e->mov_type < MOV_TYPE_QUANTOS);
 
-
 	/*
 	 * [0] uchar => quantas jogadas possiveis existem
 	 * [1] jogada_s
 	 * ..
 	 * [N] jogada_s
 	 */
+#define SIZE (1 + (sizeof(jogada_s) * NJOGADAS))
 	static uchar arr[SIZE] = "";
 	memset(arr, 0, SIZE);
 

@@ -87,9 +87,9 @@ void imprime_jogadas (const estado_p e)
 }
 
 /**
+ * @def NUM_CORES
  * @brief Numero de cores existentes.
  */
-#define NUM_CORES	(1 << (3 * 8))
 
 /**
  * @brief Calcula uma cor aleatoria.
@@ -102,6 +102,7 @@ char * random_color (void)
 	 * logo existem 2 ^ (3 * 8)
 	 * cores diferentes
 	 */
+#define NUM_CORES	(1 << (3 * 8))
 	unsigned int rgb = rand() % NUM_CORES;
 
 	/* "#rrggbb0" */
@@ -140,27 +141,22 @@ void imprime_porta (const estado_p e)
 }
 
 /**
+ * @def botao(TXT, I, LINK)
  * @brief Imprime um link e um botao.
  * @param TXT O texto do botao.
  * @param I O indice do botao.
  * @param LINK O link.
  */
-#define botao(TXT, I, LINK) \
-	GAME_LINK(LINK); \
-	BOTAO((BOTAO_X), (I) * (BOTAO_Y), (TXT), random_color()); \
-	FECHA_A
-
 /**
+ * @def link_reset
  * @brief Calcula o link da accao associada ao botao.
  */
-#define link_reset accao2str(accao_new(e->nome, ACCAO_RESET, posicao_new(0, 0), posicao_new(0,0)))
 
 /**
+ * @def link_mt(MT)
  * @brief Calcula o link da accao associada ao botao.
  * @param MT Tipo de movimento.
  */
-#define link_mt(MT) \
-		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 
 /**
  * @brief Imprime os botoes do jogo.
@@ -168,20 +164,28 @@ void imprime_porta (const estado_p e)
  */
 void imprime_menu (const estado_p e)
 {
+#define botao(TXT, I, LINK) \
+	GAME_LINK(LINK); \
+	BOTAO((BOTAO_X), (I) * (BOTAO_Y), (TXT), random_color()); \
+	FECHA_A
+
 	assert(e != NULL);
 
 	COMMENT("RESET"); {
+#define link_reset accao2str(accao_new(e->nome, ACCAO_RESET, posicao_new(0, 0), posicao_new(0,0)))
 		botao("Reset", 1, link_reset);
+#undef link_reset
 	}
 
 	if (!fim_de_jogo(e)) {
 		COMMENT("MOVEMENT TYPE");
-
 		enum mov_type mt = mov_type_next(e->mov_type);
+
+#define link_mt(MT) \
+		accao2str(accao_new(e->nome, ACCAO_CHANGE_MT, e->jog.pos, posicao_new(MT, 0)))
 		botao("Movement Type", 2, link_mt(mt));
-	}
 #undef link_mt
-#undef link_reset
+	}
 #undef botao
 }
 

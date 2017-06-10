@@ -69,6 +69,11 @@ typedef struct {
 } accao_s;
 
 /**
+ * @var typedef jogada_s * jogada_p
+ * @brief Um apontador para uma jogada_s.
+ */
+
+/**
  * @brief O tipo de jogada.
  */
 typedef struct {
@@ -76,12 +81,7 @@ typedef struct {
 	posicao_s dest;
 	/** O link com a accao. */
 	char link[JOGADA_LINK_MAX_BUFFER];
-} jogada_s;
-
-/**
- * @brief Um apontador para uma jogada_s.
- */
-typedef jogada_s * jogada_p;
+} jogada_s, * jogada_p;
 
 /**
  * @brief Ficheiro de highscore.

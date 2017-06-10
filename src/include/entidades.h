@@ -2,6 +2,14 @@
 #ifndef _ENTIDADES_H
 #define _ENTIDADES_H
 
+#include "posicao.h"
+
+
+/**
+ * @var typedef entidade * entidades
+ * @brief Um apontador para uma entidade.
+ */
+
 /**
  * @brief O tipo entidade
  */
@@ -12,12 +20,7 @@ typedef struct {
 	uchar vida;
 	/** O id da entidade */
 	uchar id;
-} entidade;
-
-/**
- * @brief Um apontador para uma entidade.
- */
-typedef entidade * entidades;
+} entidade, * entidades;
 
 /**
  * @brief Verifica se existe alguma entidade com uma certa posicao
